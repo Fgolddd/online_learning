@@ -2,6 +2,8 @@ import re
 from rest_framework import status, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import User
 # Create your views here.
@@ -43,3 +45,21 @@ class RegisterView(APIView):
             'phone': obj.phone
         }
         return Response(res, status=status.HTTP_201_CREATED)
+
+class LoginView(TokenObtainPairView):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+        
+        result = serializer.validated_data
+        result['id'] = serializer.user.id
+        result['phone'] = serializer.user.phone
+        result['username'] = serializer.user.username
+        result['token'] = result.pop('access')
+
+        return Response(result, status=status.HTTP_200_OK)
