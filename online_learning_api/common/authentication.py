@@ -1,5 +1,5 @@
 from django.contrib.auth.backends import BaseBackend
-from apps.users.models import User
+from apps.user.models import User
 from django.db.models import Q
 from rest_framework import serializers
 class MyBackend(BaseBackend):

@@ -50,9 +50,12 @@ INSTALLED_APPS = [
     # 'drf_yasg',
     'django_filters',
     #富文本编辑器
-    # 'ckeditor',
+    'ckeditor',
+    'stdimage',
+    
     "apps.home",
     "apps.users",
+    "apps.course",
 ]
 
 MIDDLEWARE = [
@@ -93,10 +96,10 @@ WSGI_APPLICATION = 'online_learning_api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
+        'NAME': 'online_learning',
         'USER': 'lyx',
         'PASSWORD': 'lyx',
-        'HOST': '114.55.232.41',
+        'HOST': '120.26.205.152',
         'PORT': '3306',
         }
 }
@@ -187,57 +190,57 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
-# source E:/python/online_learning_api/Scripts/activate 
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:@114.55.232.41:6379/0",
 
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
-        }
-    },
-    # 提供给admin运营站点的session存储
-    "session": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:@114.55.232.41:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
-        }
-    },
-    # 提供存储短信验证码
-    "sms_code": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:@114.55.232.41:6379/2",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
-        }
-    },
-    # 提供存存储热门关键字
-    "hot_word": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:@114.55.232.41:6379/3",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    },
-    # 提供存储购物车课程商品
-    "cart": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:@114.55.232.41:6379/4",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    },
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://:@120.26.205.152:6379/0",
+
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+#         }
+#     },
+#     # 提供给admin运营站点的session存储
+#     "session": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://:@120.26.205.152:6379/1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+#         }
+#     },
+#     # 提供存储短信验证码
+#     "sms_code": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://:@120.26.205.152:6379/2",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+#         }
+#     },
+#     # 提供存存储热门关键字
+#     "hot_word": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://:@120.26.205.152:6379/3",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     },
+#     # 提供存储购物车课程商品
+#     "cart": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://:@120.26.205.152:6379/4",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     },
+# }
 # 设置用户登录admin站点时,记录登录状态的session保存到redis缓存中
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 # 设置session保存的位置对应的缓存配置项
-SESSION_CACHE_ALIAS = "session"
+# SESSION_CACHE_ALIAS = "session"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -273,3 +276,5 @@ SIMPLE_JWT = {
 # AUTHENTICATION_BACKENDS = [
 #     'common.authentication.MyBackend'
 # ]
+
+# source E:/python/online_learning_api/Scripts/activate 
