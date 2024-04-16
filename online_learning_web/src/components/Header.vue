@@ -1,17 +1,23 @@
 <script setup>
-import { Home, Bookshelf, Search } from '@icon-park/vue-next'
+import { Home, Bookshelf, Search, User, ShoppingCart } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
-
+import Login from '@/components/Login.vue'
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+const store = useStore()
 const router = useRouter()
-const login = () => {
-  router.push('/login')
+
+const loginModalOpen = ref(false)
+
+function openLoginModal() {
+  loginModalOpen.value = true
+}
+function closeLoginModal() {
+  loginModalOpen.value = false
 }
 
 const index = () => {
   router.push('/')
-}
-const course = () => {
-  router.push('/course')
 }
 </script>
 
@@ -19,8 +25,8 @@ const course = () => {
   <header>
     <nav class="navbar is-spaced" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="https://bulma.io">
-          <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
+        <a class="navbar-item" href="/">
+          <img src="../assets/photo/logo.png" width="112" height="72" />
         </a>
 
         <a
@@ -67,12 +73,43 @@ const course = () => {
         </div>
 
         <div class="navbar-end">
-          <div class="navbar-item" @click="login">
-            <a> 登录/注册</a>
-          </div>
+          <a class="navbar-item" v-if="store.getters['login/getIsAuthenticated']" @click="cart">
+            <shopping-cart
+              theme="multi-color"
+              size="24"
+              :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
+            />
+
+            <span>购物车</span>
+          </a>
+          <a class="navbar-item">
+            <user
+              v-if="store.getters['login/getIsAuthenticated']"
+              theme="multi-color"
+              size="24"
+              :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
+            />
+            <span v-if="store.getters['login/getIsAuthenticated']">{{
+              store.getters['login/getUserName']
+            }}</span>
+          </a>
+          <a class="navbar-item" @click="openLoginModal">
+            <button v-if="!store.getters['login/getIsAuthenticated']" class="button is-primary">
+              登录
+            </button>
+          </a>
+          <a class="navbar-item">
+            <button
+              v-if="!store.getters['login/getIsAuthenticated']"
+              class="button is-primary is-light"
+            >
+              注册
+            </button>
+          </a>
         </div>
       </div>
     </nav>
+    <Login :loginModalOpen="loginModalOpen" @closeLoginModal="closeLoginModal" />
   </header>
 </template>
 

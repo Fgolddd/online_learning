@@ -14,8 +14,8 @@ class RegisterView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
         phone = request.data.get('phone')
-        password_confirmation = request.data.get('password_confirmation')
-        if not all([username, password, phone, password_confirmation]):
+        print(username, password, phone)
+        if not all([username, password, phone]):
             return Response({'error': '参数不能为空'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         
         if User.objects.filter(username=username).exists():
@@ -24,9 +24,6 @@ class RegisterView(APIView):
         if User.objects.filter(phone=phone).exists():
             return Response({'error': '手机号已注册'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         
-        if password != password_confirmation:
-            return Response({'error': '密码不一致'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-
         if not (6 <= len(password) <= 18):
             return Response({'error': '密码长度要在6-18位'}, status=status.HTTP_400_BAD_REQUEST)
 

@@ -27,7 +27,9 @@ SECRET_KEY = 'django-insecure-7gdi9of+54=t)6o*z449sv&!6#au_t6z-8=knknuc8z0_8-3lw
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
 
 # Application definition
 
@@ -50,7 +52,7 @@ INSTALLED_APPS = [
     # 'drf_yasg',
     'django_filters',
     #富文本编辑器
-    'ckeditor',
+    'django_ckeditor_5',
     'stdimage',
     
     "apps.home",
@@ -104,44 +106,44 @@ DATABASES = {
         }
 }
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
-    "filters": {
-        "require_debug_true": {
-            "()": "django.utils.log.RequireDebugTrue",
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "INFO",
-            "filters": ["require_debug_true"],
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
-        },
-        "file":{
-            "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": BASE_DIR / "logs/online_learning.log"
-        }
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console", "file"],
-            "propagate": True,
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "formatters": {
+#         "verbose": {
+#             "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+#             "style": "{",
+#         },
+#         "simple": {
+#             "format": "{levelname} {message}",
+#             "style": "{",
+#         },
+#     },
+#     "filters": {
+#         "require_debug_true": {
+#             "()": "django.utils.log.RequireDebugTrue",
+#         },
+#     },
+#     "handlers": {
+#         "console": {
+#             "level": "INFO",
+#             "filters": ["require_debug_true"],
+#             "class": "logging.StreamHandler",
+#             "formatter": "simple",
+#         },
+#         "file":{
+#             "level": "INFO",
+#             "class": "logging.handlers.RotatingFileHandler",
+#             "filename": BASE_DIR / "logs/online_learning.log"
+#         }
+#     },
+#     "loggers": {
+#         "django": {
+#             "handlers": ["console", "file"],
+#             "propagate": True,
+#         },
+#     },
+# }
 
 
 # Password validation
