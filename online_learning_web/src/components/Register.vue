@@ -1,8 +1,10 @@
 <!-- RegisterModal.vue -->
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue'
-import axios from 'axios'
-import { toast } from 'bulma-toast'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const store = useStore()
 const username = ref('')
 const phone = ref('')
 const password = ref('')
@@ -21,32 +23,10 @@ function handleRegisterClose() {
 }
 
 async function handleSubmit() {
-  try {
-    // 在这里实现注册逻辑，如发送注册请求到后端
-    // 示例：假设 `register` 是一个异步注册函数
-    const registerData = {
-      username: username.value,
-      phone: phone.value,
-      password: password.value,
-    }
-    console.log(registerData)
-    const response = await axios.post('/api/users/register/', registerData).then(() => {
-      toast({
-        message: 'Account created, please log in!',
-        type: 'is-danger',
-        dismissible: true,
-        pauseOnHover: true,
-        duration: 2000,
-        position: 'bottom-right',
-      })
-    })
-    console.log(response.data)
-    handleRegisterClose()
-    // 注册成功后的操作...
-  } catch (error) {
-    // 处理注册失败...
-    console.log(error.response.data.error)
-  }
+  const form = { username: username.value, phone: phone.value, password: password.value }
+
+  await store.commit('login/register', form)
+  router.push('/')
 }
 </script>
 <template>
@@ -66,20 +46,8 @@ async function handleSubmit() {
                 <input
                   v-model="username"
                   class="input"
-                  type="username"
+                  type="text"
                   placeholder="请输入用户名"
-                  required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">手机号</label>
-              <div class="control">
-                <input
-                  v-model="phone"
-                  class="input"
-                  type="phone"
-                  placeholder="请输入手机号"
                   required
                 />
               </div>
@@ -92,6 +60,18 @@ async function handleSubmit() {
                   class="input"
                   type="password"
                   placeholder="请输入密码"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">手机号</label>
+              <div class="control">
+                <input
+                  v-model="phone"
+                  class="input"
+                  type="text"
+                  placeholder="请输入手机号"
                   required
                 />
               </div>

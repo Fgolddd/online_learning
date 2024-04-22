@@ -1,78 +1,134 @@
 <script setup>
-import { ref } from 'vue'
+import { Comment, ThumbsUp } from '@icon-park/vue-next'
 
-const articles = ref([
-  // 假设这是从 API 获取的文章数据
-  {
-    id: 1,
-    title: '标题一',
-    summary: '这是文章一的摘要...',
-    commentsCount: 7,
-    likesCount: 98,
-  },
-  {
-    id: 2,
-    title: '标题二',
-    summary: '这是文章二的摘要...',
-    commentsCount: 23,
-    likesCount: 65,
-  },
-  // 更多文章...
-])
+import { ref, computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+
+const isLogin = ref(Boolean(localStorage.getItem('token')))
+const store = useStore()
+
+const posts = computed(() =>
+  store.getters['post/getPosts'].map((post) => ({ ...post, isActivate: false })),
+)
+const userInfo = store.getters['userInfo/getUserInfo']
+
+onBeforeMount(() => {
+  store.dispatch('post/fetchPosts')
+  if (localStorage.getItem('token')) {
+    store.dispatch('userInfo/fetchUserInfo', localStorage.getItem('userId'))
+  }
+})
 </script>
 
 <template>
-  <section class="section">
-    <div class="columns is-mobile is-centered">
-      <div class="column is-half">
-        <div class="card">
-          <header class="card-header">
-            <p class="card-header-title">发个动态吧！</p>
-          </header>
-          <div class="card-content">
-            <div class="content is-flex">
-              <figure class="image is-24x24">
-                <img class="is-rounded" src="" />
-              </figure>
-              <input
-                class="input is-primary is-rounded"
-                type="tel"
-                placeholder="有什么新鲜事想告诉大家！"
-                @click="inputClick"
-              />
-            </div>
-          </div>
+  <section class="section section-spacing">
+    <div class="column" v-if="isLogin || store.getters['login/getIsAuthenticated']">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">发个动态吧！</p>
+        </header>
+        <div class="card-content has-flex">
+          <figure class="image is-48x48 mr-2">
+            <img class="is-rounded" :src="userInfo.avatar" />
+          </figure>
+          <input
+            class="input is-primary is-rounded"
+            type="tel"
+            placeholder="有什么新鲜事想告诉大家！"
+            @click="inputClick"
+          />
         </div>
       </div>
     </div>
-
-    <div class="columns is-multiline is-centered">
-      <div class="column is-half">
-        <article v-for="article in articles" :key="article.id" class="column">
+    <div class="columns is-centered">
+      <div class="column">
+        <article v-for="post in posts" :key="post.id" class="column">
           <div class="card">
-            <header class="card-header">
-              <p class="card-header-title">
-                {{ article.title }}
-              </p>
-              <a href="#" class="card-header-icon" aria-label="more options">
-                <span class="icon">
-                  <i class="fas fa-angle-down" aria-hidden="true"></i>
-                </span>
-              </a>
-            </header>
-            <div class="card-content">
-              <div class="content">
-                {{ article.summary }}
+            <div class="level">
+              <div class="level-left">
+                <div class="level-item">
+                  <figure class="image is-48x48">
+                    <img class="is-rounded" :src="post.author.avatar" />
+                  </figure>
+                </div>
+                <div class="level-item">
+                  <p class="is-48x48">
+                    <strong>{{ post.author.username }}</strong>
+                  </p>
+                </div>
+              </div>
+
+              <div class="level-right">
+                <div class="level-item">
+                  <time>发布于 {{ post.created_at }}</time>
+                </div>
               </div>
             </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">评论({{ article.commentsCount }})</a>
-              <a href="#" class="card-footer-item">点赞({{ article.likesCount }})</a>
-            </footer>
+
+            <div class="card-content">
+              <div class="content">
+                {{ post.content }}
+              </div>
+            </div>
+
+            <div class="columns is-multiline is-gapless">
+              <div class="column is-half">
+                <button
+                  @click="handleCommentActive(post)"
+                  class="dropdown button is-fullwidth"
+                  onclick="this.classList.toggle('is-active')"
+                  aria-haspopup="true"
+                  aria-controls="dropdown-menu"
+                >
+                  <comment
+                    theme="multi-color"
+                    size="24"
+                    :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
+                  />
+
+                  <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                    <div class="dropdown-content">
+                      <a href="#" class="dropdown-item"> Dropdown item </a>
+                      <a class="dropdown-item"> Other dropdown item </a>
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              <div class="column is-half">
+                <button @click="toggleDropdown" class="button is-fullwidth">
+                  <thumbs-up
+                    theme="multi-color"
+                    size="24"
+                    :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
+                  />
+                </button>
+              </div>
+            </div>
           </div>
         </article>
       </div>
     </div>
   </section>
 </template>
+<style scoped>
+.card:hover {
+  cursor: pointer;
+  transform: scale(1.03); /* 示例：放大2% */
+  transition: transform 0.2s ease-in-out; /* 添加平滑过渡效果 */
+}
+.section-spacing {
+  margin-left: 20rem; /* 示例：左侧留出2rem（可根据需要调整） */
+  margin-right: 20rem; /* 示例：右侧留出2rem（可根据需要调整） */
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+.has-flex {
+  display: flex;
+  align-items: center; /* 可选，垂直居中对齐 */
+}
+.mr-2 {
+  margin-right: 0.5rem;
+}
+</style>
 

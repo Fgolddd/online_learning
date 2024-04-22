@@ -2,7 +2,8 @@
 import { ref, defineProps, defineEmits } from 'vue'
 import Register from '@/components/Register.vue'
 import { useStore } from 'vuex'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const username = ref('')
 const password = ref('')
 const store = useStore()
@@ -33,11 +34,11 @@ async function handleSubmit() {
     // 示例：假设 `login` 是一个异步登录函数
     const credentials = { username: username.value, password: password.value }
     await store.dispatch('login/login', credentials)
-    console.log(store.getters['login/getUserName'])
+
     handleLoginClose()
     // 登录成功后的操作...
+    router.push('/')
   } catch (error) {
-    store.commit('login/setLoginError', error)
     console.error(error)
     // 处理登录失败...
   }

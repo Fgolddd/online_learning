@@ -1,4 +1,6 @@
 import axios from "axios";
+import { toast } from 'bulma-toast'
+
 
 const namespaced = true;
 const state = () => ({
@@ -6,7 +8,6 @@ const state = () => ({
     username: null,
     token: null,
     isAuthenticated: false,
-    loginError: null,
 });
 
 const getters = {
@@ -14,25 +15,43 @@ const getters = {
     getUserName: (state) => state.username,
     getToken: (state) => state.token,
     getIsAuthenticated: (state) => state.isAuthenticated,
-    getLoginError: (state) => state.loginError,
+
 };
 
 const actions = {
     async login({ commit }, credentials) {
-        commit('clearLoginError');
         try {
-            const response = await axios.post('api/users/login/', credentials);
-            commit('setAuthData', response.data);
-            console.log(response.data);
-            axios.defaults.headers.common['Authorization'] = "Bearer" + response.data.token;
-            localStorage.setItem('token', response.data.token)
+            const response = await axios.post('users/login/', credentials);
+            if (response.status === 200) {
+                commit('setAuthData', response.data);
+                toast({
+                    message: 'Login successful!',
+                    type: 'is-primary',
+                    position: 'top-center',
+                    duration: 2000,
+                })
+            }
+
         } catch (error) {
-            commit('setLoginError', error.response?.data?.message || 'An error occurred during login.');
+            const message = error.response.data.detail
+            toast({
+                message: message,
+                type: 'is-danger',
+                position: 'top-center',
+                duration: 2000,
+            })
         }
     },
 
     logout({ commit }) {
         commit('clearAuthData');
+        toast({
+            message: 'Logout successful!',
+            type: 'is-primary',
+            position: 'top-center',
+            duration: 2000,
+        })
+
     },
 }
 
@@ -42,19 +61,42 @@ const mutations = {
         state.username = authData.username;
         state.token = authData.token;
         state.isAuthenticated = true;
+        localStorage.setItem('token', authData.token);
+        localStorage.setItem('userName', authData.username);
+        localStorage.setItem('userId', authData.id);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${authData.token}`;
     },
     clearAuthData(state) {
         state.userId = null;
         state.userName = null;
         state.token = null;
         state.isAuthenticated = false;
+        localStorage.removeItem('token');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userId');
+        delete axios.defaults.headers.common['Authorization'];
     },
-    setLoginError(state, error) {
-        state.loginError = error;
+    async register(state, form) {
+        try {
+            const response = await axios.post('users/register/', form);
+            if (response.status === 201) {
+                toast({
+                    message: "注册成功",
+                    type: 'is-primary',
+                    position: 'top-center',
+                    duration: 2000,
+                })
+            }
+        } catch (error) {
+            const message = error.response.data.error;
+            toast({
+                message: message,
+                type: 'is-danger',
+                position: 'top-center',
+                duration: 2000,
+            })
+        }
     },
-    clearLoginError(state) {
-        state.loginError = null;
-    }
 }
 
 export default {

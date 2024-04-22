@@ -52,12 +52,13 @@ INSTALLED_APPS = [
     # 'drf_yasg',
     'django_filters',
     #富文本编辑器
-    'django_ckeditor_5',
+    'ckeditor',
     'stdimage',
-    
-    "apps.home",
+    'taggit',
     "apps.users",
     "apps.course",
+    "apps.post",
+    "apps.comment",
 ]
 
 MIDDLEWARE = [

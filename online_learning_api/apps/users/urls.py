@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import (
 from .views import (
     RegisterView,
     LoginView,
+    UserProfileViewSet
 )
 
 urlpatterns = [
@@ -16,4 +17,18 @@ urlpatterns = [
     path('token/verify/', TokenVerifyView.as_view()),
     path('register/', RegisterView.as_view()),
     path('login/', LoginView.as_view()),
+    # 用户个人资料详情
+    path('profiles/', UserProfileViewSet.as_view({
+        'get': 'list',
+    }), name='profile-list'),
+    path('profiles/<int:pk>/', UserProfileViewSet.as_view({
+        'get': 'retrieve',
+        'put': 'partial_update',
+    }), name='profile-detail'),
+    path('profiles/<int:pk>/change-password/', UserProfileViewSet.as_view({
+        'put': 'change_password',
+    }), name='profile-change-password'),
+    path('profiles/<int:pk>/update-avatar/', UserProfileViewSet.as_view({
+        'put': 'update_avatar',
+    }), name='profile-update-avatar'),
 ]   

@@ -1,0 +1,20 @@
+from django.db import models
+from apps.users.models import User
+from apps.post.models import Post
+class Comment(models.Model):
+    """
+    帖子评论模型
+    """
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', verbose_name='所属帖子')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_comments', verbose_name='评论者')
+    content = models.TextField(verbose_name='评论内容')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    def __str__(self):
+        return f'{self.user.username} 在 {self.post.pk} 的评论'
+
+    class Meta:
+        db_table = 'olearn_comment'
+        ordering = ['-created_at']
+        verbose_name = '评论'
+        verbose_name_plural = verbose_name
