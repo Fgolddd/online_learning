@@ -1,18 +1,7 @@
 from rest_framework import viewsets, permissions
-from .models import CourseCategory, Course
-from .serializers import CourseCategorySerializer, CourseSerializer
+from .models import Chapter, Course
+from .serializers import  CourseSerializer, ChapterSerializer
 
-
-# class CourseCategoryViewSet(viewsets.ModelViewSet):
-#     queryset = CourseCategory.objects.all()
-#     serializer_class = CourseCategorySerializer
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-#     def perform_create(self, serializer):
-#         serializer.save(created_by=self.request.user)  # 如果需要记录创建者，可以在此处添加
-
-#     def perform_update(self, serializer):
-#         serializer.save(updated_by=self.request.user)  # 如果需要记录更新者，可以在此处添加
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -20,4 +9,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-
+class ChapterViewSet(viewsets.ModelViewSet):
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

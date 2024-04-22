@@ -1,5 +1,5 @@
 from django.db import models
-from apps.users.models import User
+from apps.user.models import User
 from apps.post.models import Post
 class Comment(models.Model):
     """
@@ -11,7 +11,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
 
     def __str__(self):
-        return f'{self.user.username} 在 {self.post.pk} 的评论'
+        return f'{self.user.username} 在 {self.post.author} 的帖子 {self.post.pk} 的评论'
 
     class Meta:
         db_table = 'olearn_comment'

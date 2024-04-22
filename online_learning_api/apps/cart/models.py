@@ -4,7 +4,7 @@ from apps.course.models import Course
 # Create your models here.
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,  verbose_name='用户')
-    # course =models.ForeignKey(Course, on_delete=models.CASCADE , verbose_name='课程')
+    course =models.ForeignKey(Course, on_delete=models.CASCADE , verbose_name='课程')
 
     class Meta:
         db_table = 'onlearn_cart'

@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'stdimage',
     'taggit',
-    "apps.users",
+    "apps.user",
     "apps.course",
     "apps.post",
     "apps.comment",
@@ -192,7 +192,7 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'user.User'
 
 
 # CACHES = {

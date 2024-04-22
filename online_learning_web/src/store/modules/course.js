@@ -15,7 +15,7 @@ const getters = {
 const actions = {
     async fetchCourses({ commit }) {
         // 使用实际的API URL替换此处的占位符
-        const response = await axios.get('courses/')
+        const response = await axios.get('course/')
         commit('setCourses', response.data);
 
     },

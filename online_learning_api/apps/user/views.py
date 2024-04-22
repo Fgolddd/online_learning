@@ -11,7 +11,7 @@ from .serializers import UserSerializer
 # Create your views here.
 
 
-class UserProfileViewSet(viewsets.ModelViewSet):
+class UserInfoViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, UserPermission]
@@ -44,17 +44,6 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    @action(detail=False, methods=['get'], url_path='avatar', url_name='retrieve_avatar')
-    def retrieve_avatar(self, request):
-        user = request.user
-
-        if user.avatar:
-            # 构建头像URL：MEDIA_URL + 'avatars/' + avatar_file_name
-            avatar_url = f"{settings.MEDIA_URL}avatars/{user.avatar.name}"
-            return Response({'avatar_url': avatar_url}, status=status.HTTP_200_OK)
-        else:
-            # 用户没有设置头像，返回相应提示
-            return Response({'message': 'No avatar found for the user.'}, status=status.HTTP_404_NOT_FOUND)
 class RegisterView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -82,8 +71,8 @@ class RegisterView(APIView):
         )
 
         res = {
-            'username': username,
             'id': obj.id,
+            'username': username, 
             'phone': obj.phone
         }
         return Response(res, status=status.HTTP_201_CREATED)
@@ -102,8 +91,7 @@ class LoginView(TokenObtainPairView):
         result['id'] = serializer.user.id
         result['phone'] = serializer.user.phone
         result['username'] = serializer.user.username
-        # result['avatar'] = serializer.user.avatar
-        # result['collections'] = serializer.user.collections
+
         result['token'] = result.pop('access')
 
         return Response(result, status=status.HTTP_200_OK)

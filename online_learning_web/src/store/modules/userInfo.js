@@ -15,7 +15,7 @@ const actions = {
         const headers = {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
-        const response = await axios.get(`users/profiles/${id}`, { headers })
+        const response = await axios.get(`user/info/${id}`, { headers })
         commit('setUserInfo', response.data);
     },
 };

@@ -1,48 +1,39 @@
 <script setup>
 import { Home, Bookshelf, Search, User, ShoppingCart } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
-import Login from '@/components/Login.vue'
-import { ref, watchEffect } from 'vue'
+
+import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import Register from './Register.vue'
+
 const store = useStore()
 const router = useRouter()
 const isLogin = ref(false)
 
+onMounted(() => {
+  if (localStorage.getItem('userName') || store.getters['login/getIsAuthenticated']) {
+    isLogin.value = true
+  } else {
+    isLogin.value = false
+  }
+})
+const userName = localStorage.getItem('userName')
+
 const handleLogout = async () => {
   await store.dispatch('login/logout')
 }
-watchEffect(() => {
-  ;(isLogin.value =
-    Boolean(localStorage.getItem('token')) || store.getters['login/getIsAuthenticated']),
-    (newValue) => {
-      isLogin.value = Boolean(newValue)
-      console.log(isLogin.value)
-    },
-    { immediate: true, deep: true }
-})
-const loginModalOpen = ref(false)
-const registerModalOpen = ref(false)
-function openLoginModal() {
-  loginModalOpen.value = true
-}
-function closeLoginModal() {
-  loginModalOpen.value = false
-}
-function openRegisterModal() {
-  registerModalOpen.value = true
-}
-function closeRegisterModal() {
-  registerModalOpen.value = false
-}
-const userName = localStorage.getItem('userName')
-const index = () => {
+
+const toIndex = () => {
   router.push('/')
 }
-const course = () => {
+const toCourse = () => {
   router.push('/course')
 }
-const userId = localStorage.getItem('userId')
+const toLogin = () => {
+  router.push('/login')
+}
+const toRegister = () => {
+  router.push('/register')
+}
 </script>
 
 <template>
@@ -67,12 +58,12 @@ const userId = localStorage.getItem('userId')
       </div>
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" @click="index">
+          <a class="navbar-item" @click="toIndex">
             <home theme="multi-color" size="24" :fill="['#333', '#50e3c2', '#FFF', '#cf139e']" />
             <span>首页</span>
           </a>
 
-          <a class="navbar-item" @click="course">
+          <a class="navbar-item" @click="toCourse">
             <bookshelf
               theme="multi-color"
               size="24"
@@ -97,17 +88,15 @@ const userId = localStorage.getItem('userId')
         </div>
 
         <div class="navbar-end">
-          <router-link :to="{ name: 'Cart', params: { userId: userId } }">
-            <a class="navbar-item" v-if="isLogin">
-              <shopping-cart
-                theme="multi-color"
-                size="24"
-                :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
-              />
+          <a class="navbar-item" v-if="isLogin">
+            <shopping-cart
+              theme="multi-color"
+              size="24"
+              :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
+            />
 
-              <span>购物车</span>
-            </a>
-          </router-link>
+            <span>购物车</span>
+          </a>
 
           <a class="navbar-item" v-if="isLogin">
             <div class="dropdown is-hoverable is-right">
@@ -129,17 +118,15 @@ const userId = localStorage.getItem('userId')
               </div>
             </div>
           </a>
-          <a class="navbar-item" @click="openLoginModal">
+          <a class="navbar-item" @click="toLogin">
             <button v-if="!isLogin" class="button is-primary">登录</button>
           </a>
-          <a class="navbar-item" @click="openRegisterModal">
+          <a class="navbar-item" @click="toRegister">
             <button v-if="!isLogin" class="button is-primary is-light">注册</button>
           </a>
         </div>
       </div>
     </nav>
-    <Login :loginModalOpen="loginModalOpen" @closeLoginModal="closeLoginModal" />
-    <Register :registerModalOpen="registerModalOpen" @closeRegisterModal="closeRegisterModal" />
   </header>
 </template>
 

@@ -21,7 +21,7 @@ const getters = {
 const actions = {
     async login({ commit }, credentials) {
         try {
-            const response = await axios.post('users/login/', credentials);
+            const response = await axios.post('user/login/', credentials);
             if (response.status === 200) {
                 commit('setAuthData', response.data);
                 toast({
@@ -78,7 +78,7 @@ const mutations = {
     },
     async register(state, form) {
         try {
-            const response = await axios.post('users/register/', form);
+            const response = await axios.post('user/register/', form);
             if (response.status === 201) {
                 toast({
                     message: "注册成功",

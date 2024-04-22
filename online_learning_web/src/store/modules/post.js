@@ -13,7 +13,7 @@ const getters = {
 const actions = {
     async fetchPosts({ commit }) {
         // 使用实际的API URL替换此处的占位符
-        const response = await axios.get('posts/')
+        const response = await axios.get('post/')
         commit('setPosts', response.data);
 
     },

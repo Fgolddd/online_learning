@@ -20,16 +20,37 @@ class CourseCategory(BaseModel):
     def __str__(self):
         return self.name
 
+class Chapter(models.Model):
+    course = models.ForeignKey("Course", on_delete=models.DO_NOTHING,
+                                 db_constraint=False, null=True, blank=True, verbose_name="课程")
+    title = models.CharField(max_length=255, verbose_name="章节标题")
+    video = models.ManyToManyField("Video", verbose_name="视频", blank=True)
+    
+    class Meta:
+        db_table = "onlearn_course_chapter"
+        verbose_name = "课程章节"
+        verbose_name_plural = verbose_name
+    
+    def __str__(self):
+        return "%s" % self.title
+
+class Video(models.Model):
+    title = models.CharField(max_length=255, verbose_name="视频标题")
+    link = models.URLField(max_length=255, verbose_name="视频链接")
+
+    class Meta:
+        db_table = "onlearn_course_video"
+        verbose_name = "课程视频"
+        verbose_name_plural = verbose_name
+    
+    def __str__(self):
+        return "%s" % self.title
 
 class Course(BaseModel):
     course_type = ((0, "免费课程"), (1, "付费课程"))
     status = ((0, "下线"), (1, "上线"))
-
     course_cover = models.ImageField(max_length=255, upload_to="course/cover/", null=True,
     verbose_name="封面图片", blank=True)
-    course_video = models.URLField( max_length=255, blank=True, null=True,
-                                    verbose_name="课程视频")
-    
     course_type = models.SmallIntegerField(choices=course_type, default=0, verbose_name="付费类型")
     description = RichTextField(blank=True, null=True, verbose_name="详情介绍")
     attachment_path = models.CharField(max_length=1000, blank=True, null=True, verbose_name="课件路径")
@@ -39,8 +60,8 @@ class Course(BaseModel):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="课程原价")
     category = models.ForeignKey("CourseCategory", related_name="course_list", on_delete=models.DO_NOTHING,
                                  db_constraint=False, null=True, blank=True, verbose_name="课程分类")
-    chapters = models.JSONField(null=True, blank=True, verbose_name="章节信息")
-
+    chapters = models.ForeignKey("Chapter", related_name="course_list", on_delete=models.DO_NOTHING,
+                                 db_constraint=False, null=True, blank=True, verbose_name="课程章节")
     class Meta:
         db_table = "onlearn_course_info"
         verbose_name = "课程信息"
@@ -48,5 +69,4 @@ class Course(BaseModel):
 
     def __str__(self):
         return "%s" % self.name
-
 
