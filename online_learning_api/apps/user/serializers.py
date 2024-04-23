@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_staff', 
             'collections',
         )
-        read_only_fields = ('id', 'is_staff')
+        
 
 
     def create(self, validated_data):

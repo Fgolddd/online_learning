@@ -1,12 +1,12 @@
 import axios from "axios";
 import { toast } from 'bulma-toast'
 
-
 const namespaced = true;
 const state = () => ({
     userId: null,
     username: null,
     token: null,
+
     isAuthenticated: false,
 });
 
@@ -14,8 +14,8 @@ const getters = {
     getUserId: (state) => state.userId,
     getUserName: (state) => state.username,
     getToken: (state) => state.token,
-    getIsAuthenticated: (state) => state.isAuthenticated,
 
+    getIsAuthenticated: (state) => state.isAuthenticated,
 };
 
 const actions = {
@@ -25,7 +25,7 @@ const actions = {
             if (response.status === 200) {
                 commit('setAuthData', response.data);
                 toast({
-                    message: 'Login successful!',
+                    message: '成功登录',
                     type: 'is-primary',
                     position: 'top-center',
                     duration: 2000,
@@ -46,7 +46,7 @@ const actions = {
     logout({ commit }) {
         commit('clearAuthData');
         toast({
-            message: 'Logout successful!',
+            message: '成功退出登录',
             type: 'is-primary',
             position: 'top-center',
             duration: 2000,
@@ -60,10 +60,12 @@ const mutations = {
         state.userId = authData.id;
         state.username = authData.username;
         state.token = authData.token;
+
         state.isAuthenticated = true;
         localStorage.setItem('token', authData.token);
         localStorage.setItem('userName', authData.username);
         localStorage.setItem('userId', authData.id);
+
         axios.defaults.headers.common['Authorization'] = `Bearer ${authData.token}`;
     },
     clearAuthData(state) {
@@ -74,6 +76,7 @@ const mutations = {
         localStorage.removeItem('token');
         localStorage.removeItem('userName');
         localStorage.removeItem('userId');
+
         delete axios.defaults.headers.common['Authorization'];
     },
     async register(state, form) {

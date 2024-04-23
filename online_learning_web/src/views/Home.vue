@@ -1,28 +1,52 @@
 <script setup>
-import { Comment, ThumbsUp } from '@icon-park/vue-next'
-
+import Footer from '../components/Footer.vue'
+import Header from '../components/Header.vue'
+import { toast } from 'bulma-toast'
 import { ref, computed, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-const isLogin = ref(Boolean(localStorage.getItem('token')))
+const isLogin = ref(false)
 const store = useStore()
-
+const router = useRouter()
 const posts = computed(() =>
   store.getters['post/getPosts'].map((post) => ({ ...post, isActivate: false })),
 )
 const userInfo = store.getters['userInfo/getUserInfo']
+
+function toPostDetail(postId) {
+  if (localStorage.getItem('token')) {
+    router.push(`/post/${postId}`)
+  } else {
+    toast({
+      message: '请先登录',
+      type: 'is-danger',
+      position: 'top-center',
+      duration: 2000,
+    })
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000)
+  }
+}
 
 onBeforeMount(() => {
   store.dispatch('post/fetchPosts')
   if (localStorage.getItem('token')) {
     store.dispatch('userInfo/fetchUserInfo', localStorage.getItem('userId'))
   }
+  if (localStorage.getItem('userName') || store.getters['login/getIsAuthenticated']) {
+    isLogin.value = true
+  } else {
+    isLogin.value = false
+  }
 })
 </script>
 
 <template>
+  <Header></Header>
   <section class="section section-spacing">
-    <div class="column" v-if="isLogin || store.getters['login/getIsAuthenticated']">
+    <div class="column" v-if="isLogin">
       <div class="card">
         <header class="card-header">
           <p class="card-header-title">发个动态吧！</p>
@@ -43,24 +67,26 @@ onBeforeMount(() => {
     <div class="columns is-centered">
       <div class="column">
         <article v-for="post in posts" :key="post.id" class="column">
-          <div class="card">
-            <div class="level">
-              <div class="level-left">
-                <div class="level-item">
-                  <figure class="image is-48x48">
-                    <img class="is-rounded" :src="post.author.avatar" />
-                  </figure>
+          <div class="card" @click="toPostDetail(post.id)">
+            <div class="card-content">
+              <div class="level">
+                <div class="level-left">
+                  <div class="level-item">
+                    <figure class="image is-48x48">
+                      <img class="is-rounded" :src="post.author.avatar" />
+                    </figure>
+                  </div>
+                  <div class="level-item">
+                    <p>
+                      <strong>{{ post.author.username }}</strong>
+                    </p>
+                  </div>
                 </div>
-                <div class="level-item">
-                  <p class="is-48x48">
-                    <strong>{{ post.author.username }}</strong>
-                  </p>
-                </div>
-              </div>
 
-              <div class="level-right">
-                <div class="level-item">
-                  <time>发布于 {{ post.created_at }}</time>
+                <div class="level-right">
+                  <div class="level-item">
+                    <time>发布于 {{ post.created_at }}</time>
+                  </div>
                 </div>
               </div>
             </div>
@@ -70,46 +96,12 @@ onBeforeMount(() => {
                 {{ post.content }}
               </div>
             </div>
-
-            <div class="columns is-multiline is-gapless">
-              <div class="column is-half">
-                <button
-                  @click="handleCommentActive(post)"
-                  class="dropdown button is-fullwidth"
-                  onclick="this.classList.toggle('is-active')"
-                  aria-haspopup="true"
-                  aria-controls="dropdown-menu"
-                >
-                  <comment
-                    theme="multi-color"
-                    size="24"
-                    :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
-                  />
-
-                  <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content">
-                      <a href="#" class="dropdown-item"> Dropdown item </a>
-                      <a class="dropdown-item"> Other dropdown item </a>
-                    </div>
-                  </div>
-                </button>
-              </div>
-
-              <div class="column is-half">
-                <button @click="toggleDropdown" class="button is-fullwidth">
-                  <thumbs-up
-                    theme="multi-color"
-                    size="24"
-                    :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
-                  />
-                </button>
-              </div>
-            </div>
           </div>
         </article>
       </div>
     </div>
   </section>
+  <Footer></Footer>
 </template>
 <style scoped>
 .card:hover {

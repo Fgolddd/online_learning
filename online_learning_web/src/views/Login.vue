@@ -1,4 +1,6 @@
 <script setup>
+import Footer from '../components/Footer.vue'
+import Header from '../components/Header.vue'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -13,7 +15,9 @@ async function handleSubmit() {
     const credentials = { username: username.value, password: password.value }
     await store.dispatch('login/login', credentials)
 
-    router.push('/')
+    setTimeout(() => {
+      router.push('/')
+    }, 1000) // 延迟 1 秒后执行路由跳转
   } catch (error) {
     console.error(error)
     // 处理登录失败...
@@ -21,6 +25,7 @@ async function handleSubmit() {
 }
 </script>
 <template>
+  <Header></Header>
   <section class="section-spacing">
     <div class="card">
       <div class="card-image">
@@ -73,6 +78,7 @@ async function handleSubmit() {
       </div>
     </div>
   </section>
+  <Footer></Footer>
 </template>
 <style scoped>
 .section-spacing {

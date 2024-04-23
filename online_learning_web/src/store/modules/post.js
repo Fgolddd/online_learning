@@ -8,6 +8,7 @@ const state = () => ({
 
 const getters = {
     getPosts: (state) => state.posts,
+    getPostById: (state) => (id) => state.posts.find((post) => post.id === id),
 };
 
 const actions = {
@@ -15,7 +16,6 @@ const actions = {
         // 使用实际的API URL替换此处的占位符
         const response = await axios.get('post/')
         commit('setPosts', response.data);
-
     },
 };
 

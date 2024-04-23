@@ -81,7 +81,7 @@ class LoginView(TokenObtainPairView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-
+    
         try:
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
@@ -91,7 +91,7 @@ class LoginView(TokenObtainPairView):
         result['id'] = serializer.user.id
         result['phone'] = serializer.user.phone
         result['username'] = serializer.user.username
-
+        
         result['token'] = result.pop('access')
 
         return Response(result, status=status.HTTP_200_OK)

@@ -9,17 +9,22 @@ const store = useStore()
 const router = useRouter()
 const isLogin = ref(false)
 
-onMounted(() => {
-  if (localStorage.getItem('userName') || store.getters['login/getIsAuthenticated']) {
-    isLogin.value = true
-  } else {
-    isLogin.value = false
-  }
-})
 const userName = localStorage.getItem('userName')
+const userId = localStorage.getItem('userId')
+
+const toUserInfo = (userId) => {
+  router.push(`/user/info/${userId}`)
+}
+
+const toUserCart = (userId) => {
+  router.push(`/cart/${userId}`)
+}
 
 const handleLogout = async () => {
   await store.dispatch('login/logout')
+  setTimeout(() => {
+    router.push('/')
+  }, 1000) // 延迟 1 秒后执行路由跳转
 }
 
 const toIndex = () => {
@@ -34,6 +39,13 @@ const toLogin = () => {
 const toRegister = () => {
   router.push('/register')
 }
+onMounted(() => {
+  if (localStorage.getItem('userName') || store.getters['login/getIsAuthenticated']) {
+    isLogin.value = true
+  } else {
+    isLogin.value = false
+  }
+})
 </script>
 
 <template>
@@ -88,7 +100,7 @@ const toRegister = () => {
         </div>
 
         <div class="navbar-end">
-          <a class="navbar-item" v-if="isLogin">
+          <a class="navbar-item" v-if="isLogin" @click="toUserCart">
             <shopping-cart
               theme="multi-color"
               size="24"
@@ -110,8 +122,8 @@ const toRegister = () => {
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                  <a href="#" class="dropdown-item">个人中心</a>
-                  <a href="#" class="dropdown-item">我的课程</a>
+                  <a class="dropdown-item" @click="toUserInfo(userId)">个人中心</a>
+                  <a class="dropdown-item" @click="handleUserCourse">我的课程</a>
                   <hr class="dropdown-divider" />
                   <a class="dropdown-item" @click="handleLogout">退出登录</a>
                 </div>

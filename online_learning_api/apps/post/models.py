@@ -20,9 +20,6 @@ class Post(models.Model):
     def __str__(self):
         return self.author.username + '的帖子'
 
-    # def get_absolute_url(self):
-    #     return reverse('forum:post_detail', kwargs={'pk': self.pk})
-
     class Meta:
         db_table = 'olearn_post'
         ordering = ['-created_at']

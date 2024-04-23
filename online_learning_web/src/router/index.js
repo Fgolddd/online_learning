@@ -30,15 +30,25 @@ const router = createRouter({
       component: () => import('../views/CourseDetail.vue')
     },
     {
-      path: '/video',
+      path: '/video/:videoId',
       name: 'VideoRoom',
       component: () => import('../views/VideoRoom.vue')
     },
     {
-      path: '/Cart/:userId',
+      path: '/cart/:userId',
       name: 'Cart',
       component: () => import('../views/Cart.vue')
-    }
+    },
+    {
+      path: '/user/info/:userId',
+      name: 'UserInfo',
+      component: () => import('../views/UserInfo.vue')
+    },
+    {
+      path: '/post/:postId',
+      name: 'PostDetail',
+      component: () => import('../views/PostDetail.vue')
+    },
   ]
 })
 

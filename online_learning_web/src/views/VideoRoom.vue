@@ -1,19 +1,26 @@
 <script setup>
-import { ref } from 'vue'
+import Footer from '../components/Footer.vue'
+import Header from '../components/Header.vue'
 import Video from '@/components/Video.vue'
-const url = ref('http://vjs.zencdn.net/v/oceans.mp4')
+
+import { useStore } from 'vuex'
+const store = useStore()
+
+const video = store.getters['userInfo/getVideoInfoById']
 </script>
 <template>
+  <Header></Header>
   <section class="section-spacing">
     <div class="card">
       <div class="card-content">
         <p class="title is-4">Video Room</p>
       </div>
       <div class="card-image">
-        <Video :source="url"></Video>
+        <Video :source="video.link"></Video>
       </div>
     </div>
   </section>
+  <Footer></Footer>
 </template>
 <style scoped>
 .section-spacing {

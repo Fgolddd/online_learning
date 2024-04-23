@@ -21,8 +21,8 @@ class CourseCategory(BaseModel):
         return self.name
 
 class Chapter(models.Model):
-    course = models.ForeignKey("Course", on_delete=models.DO_NOTHING,
-                                 db_constraint=False, null=True, blank=True, verbose_name="课程")
+    course = models.ForeignKey("Course", on_delete=models.DO_NOTHING,related_name="chapters",
+                                 db_constraint=False, null=True, blank=True, verbose_name="课程章节")
     title = models.CharField(max_length=255, verbose_name="章节标题")
     video = models.ManyToManyField("Video", verbose_name="视频", blank=True)
     
@@ -60,8 +60,7 @@ class Course(BaseModel):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="课程原价")
     category = models.ForeignKey("CourseCategory", related_name="course_list", on_delete=models.DO_NOTHING,
                                  db_constraint=False, null=True, blank=True, verbose_name="课程分类")
-    chapters = models.ForeignKey("Chapter", related_name="course_list", on_delete=models.DO_NOTHING,
-                                 db_constraint=False, null=True, blank=True, verbose_name="课程章节")
+
     class Meta:
         db_table = "onlearn_course_info"
         verbose_name = "课程信息"

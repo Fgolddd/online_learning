@@ -1,4 +1,6 @@
 <script setup>
+import Footer from '../components/Footer.vue'
+import Header from '../components/Header.vue'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -15,6 +17,7 @@ async function handleSubmit() {
 }
 </script>
 <template>
+  <Header></Header>
   <section class="section-spacing">
     <div class="card">
       <div class="card-image">
@@ -75,6 +78,7 @@ async function handleSubmit() {
       </div>
     </div>
   </section>
+  <Footer></Footer>
 </template>
 <style scoped>
 .section-spacing {

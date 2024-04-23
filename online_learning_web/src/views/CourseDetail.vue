@@ -1,15 +1,38 @@
 <script setup>
+import Footer from '../components/Footer.vue'
+import Header from '../components/Header.vue'
 import { ShoppingCartAdd, Buy } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { toast } from 'bulma-toast'
+
 const store = useStore()
+const router = useRouter()
 const courseId = Number(useRouter().currentRoute.value.params.courseId)
 
 const course = store.getters['course/getCourseById'](courseId)
 
 const chapters = course.chapters
+
+async function toVideoRoom(section) {
+  if (localStorage.getItem('token')) {
+    await store.dispatch('userInfo/fetchVideoInfo', section.id)
+    router.push(`/video/${section.id}`)
+  } else {
+    toast({
+      message: '请先登录',
+      type: 'is-danger',
+      position: 'top-center',
+      duration: 2000,
+    })
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000)
+  }
+}
 </script>
 <template>
+  <Header></Header>
   <section class="section-spacing">
     <div class="columns">
       <div class="column is-half">
@@ -82,14 +105,10 @@ const chapters = course.chapters
                     role="menu"
                   >
                     <div class="dropdown-content">
-                      <a
-                        v-for="(section, sectionIndex) in chapter.info"
-                        :key="sectionIndex"
-                        class="dropdown-item"
-                      >
-                        <router-link :to="{ name: 'VideoRoom', params: { url: section.url } }">
-                          {{ section.remark }}
-                        </router-link>
+                      <a v-for="(section, sectionIndex) in chapter.video" :key="sectionIndex">
+                        <span @click="toVideoRoom(section)">
+                          <a class="dropdown-item">{{ section.title }}</a>
+                        </span>
                       </a>
                     </div>
                   </div>
@@ -101,6 +120,7 @@ const chapters = course.chapters
       </div>
     </div>
   </section>
+  <Footer></Footer>
 </template>
 
 <style scoped>

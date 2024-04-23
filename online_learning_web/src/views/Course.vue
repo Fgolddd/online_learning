@@ -1,4 +1,6 @@
 <script setup>
+import Footer from '../components/Footer.vue'
+import Header from '../components/Header.vue'
 import { computed, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -10,23 +12,19 @@ onBeforeMount(async () => {
   await store.dispatch('course/fetchCourses')
 })
 
-function handleCardClick(course) {
-  router.push({
-    name: 'CourseDetail',
-    params: {
-      courseId: course.id,
-    },
-  })
+function handleCardClick(courseId) {
+  router.push(`/course/${courseId}`)
 }
 </script>
 <template>
+  <Header></Header>
   <section>
     <p class="title is-3 has-text-centered">OLEARN 在线课程</p>
   </section>
   <section class="section-spacing">
     <div class="columns is-multiline">
       <div class="column is-one-quarter" v-for="course in courses" :key="course.id">
-        <div class="card" @click="handleCardClick(course)">
+        <div class="card" @click="handleCardClick(course.id)">
           <div class="card-image">
             <figure class="image is-4by3">
               <img :src="course.course_cover" alt="Placeholder image" />
@@ -56,6 +54,7 @@ function handleCardClick(course) {
       </div>
     </div>
   </section>
+  <Footer></Footer>
 </template>
 <style scoped>
 .card:hover {

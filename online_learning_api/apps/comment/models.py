@@ -5,8 +5,8 @@ class Comment(models.Model):
     """
     帖子评论模型
     """
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', verbose_name='所属帖子')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_comments', verbose_name='评论者')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', verbose_name='所属帖子', blank=False, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_comments', verbose_name='评论者', blank=False, null=False)
     content = models.TextField(verbose_name='评论内容')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
 

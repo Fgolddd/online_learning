@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, re_path
 
-from .views import  CourseViewSet, ChapterViewSet
+from .views import  CourseViewSet, ChapterViewSet, VideoViewSet
 
 urlpatterns = [
     
@@ -11,4 +11,6 @@ urlpatterns = [
 
     path('chapter/', ChapterViewSet.as_view({'get': 'list', 'post': 'create'})),
     path('chapter/<int:pk>/', ChapterViewSet.as_view({'get': 'retrieve', 'put': 'update',  'delete': 'destroy'})),
+    path('video/', VideoViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('video/<int:pk>/', VideoViewSet.as_view({'get': 'retrieve', 'put': 'update',  'delete': 'destroy'}))
 ]

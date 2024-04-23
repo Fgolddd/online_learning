@@ -1,4 +1,6 @@
 <script setup>
+import Footer from '../components/Footer.vue'
+import Header from '../components/Header.vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 const store = useStore()
@@ -12,6 +14,7 @@ const totalPrice = computed(() => {
 })
 </script>
 <template>
+  <Header></Header>
   <section class="section-spacing">
     <div class="columns is-centered is-multiline">
       <div class="column is-12" v-for="(item, index) in collections" :key="index">
@@ -49,9 +52,9 @@ const totalPrice = computed(() => {
           <button class="button is-primary" @click="pay">去支付</button>
         </div>
       </div>
-      "
     </div>
   </section>
+  <Footer></Footer>
 </template>
 <style scoped>
 .section-spacing {
