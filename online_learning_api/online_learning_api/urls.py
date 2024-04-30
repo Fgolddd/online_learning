@@ -9,4 +9,5 @@ urlpatterns = [
     path('api/post/', include('apps.post.urls')),
     path('api/comment/', include('apps.comment.urls')),
     path('api/course/', include('apps.course.urls')),
+    path('api/cart/', include('apps.cart.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

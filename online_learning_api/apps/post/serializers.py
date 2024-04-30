@@ -2,16 +2,18 @@ from rest_framework import serializers
 from datetime import datetime, timedelta
 from django.utils import timezone
 from .models import Post  
-from apps.comment.serializers import CommentSerializer
-from apps.user.serializers import UserSerializer
+from apps.comment.serializers import CommentReadSerializer
+from apps.user.serializers import UserSerializer, LimitedUserSerializer
 
-class LimitedUserSerializer(UserSerializer):
-    class Meta(UserSerializer.Meta):
-        fields = ('id', 'username', 'avatar')
 
 
 class PostSerializer(serializers.ModelSerializer):
-    comments = CommentSerializer(many=True, read_only=True)
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+class PostReadSerializer(serializers.ModelSerializer):
+    comments = CommentReadSerializer(many=True, read_only=True)
     author = LimitedUserSerializer(many=False, read_only=True)
     created_at = serializers.SerializerMethodField()
     # updated_at = serializers.SerializerMethodField()

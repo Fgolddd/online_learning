@@ -13,7 +13,7 @@ const video = store.getters['userInfo/getVideoInfoById']
   <section class="section-spacing">
     <div class="card">
       <div class="card-content">
-        <p class="title is-4">Video Room</p>
+        <p class="title is-4">{{ video.title }}</p>
       </div>
       <div class="card-image">
         <Video :source="video.link"></Video>

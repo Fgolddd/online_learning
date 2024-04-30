@@ -44,6 +44,7 @@ class UserInfoViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+
 class RegisterView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -91,7 +92,7 @@ class LoginView(TokenObtainPairView):
         result['id'] = serializer.user.id
         result['phone'] = serializer.user.phone
         result['username'] = serializer.user.username
-        
+        result['avatar'] = serializer.user.avatar.url
         result['token'] = result.pop('access')
 
         return Response(result, status=status.HTTP_200_OK)

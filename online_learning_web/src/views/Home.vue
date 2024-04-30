@@ -12,7 +12,12 @@ const router = useRouter()
 const posts = computed(() =>
   store.getters['post/getPosts'].map((post) => ({ ...post, isActivate: false })),
 )
-const userInfo = store.getters['userInfo/getUserInfo']
+// const userInfo = store.getters['userInfo/getUserInfo']
+const userAvatar = 'http://127.0.0.1:8000/' + localStorage.getItem('userAvatar')
+
+function inputClick() {
+  router.push('/post/edit')
+}
 
 function toPostDetail(postId) {
   if (localStorage.getItem('token')) {
@@ -31,6 +36,7 @@ function toPostDetail(postId) {
 }
 
 onBeforeMount(() => {
+  store.dispatch('userInfo/fetchUserInfo', localStorage.getItem('userId'))
   store.dispatch('post/fetchPosts')
   if (localStorage.getItem('token')) {
     store.dispatch('userInfo/fetchUserInfo', localStorage.getItem('userId'))
@@ -53,7 +59,7 @@ onBeforeMount(() => {
         </header>
         <div class="card-content has-flex">
           <figure class="image is-48x48 mr-2">
-            <img class="is-rounded" :src="userInfo.avatar" />
+            <img class="is-rounded" :src="userAvatar" />
           </figure>
           <input
             class="input is-primary is-rounded"

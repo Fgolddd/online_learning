@@ -27,12 +27,10 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'course_cover',  'course_type',
             'description','chapters', 'status','students', 'price', 
-            'category','attachment_path', 'attachment_link',
+            'category', 'attachment_link',
         )
         
-
-class CollectionCourseSerializer(serializers.ModelSerializer):
+class CartCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ('id', 'name', 'price', 'course_cover')
-
+        fields = ('id', 'name', 'course_cover', 'price')

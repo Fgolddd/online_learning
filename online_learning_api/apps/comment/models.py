@@ -14,7 +14,7 @@ class Comment(models.Model):
         return f'{self.user.username} 在 {self.post.author} 的帖子 {self.post.pk} 的评论'
 
     class Meta:
-        db_table = 'olearn_comment'
+        db_table = 'onlearn_comment'
         ordering = ['-created_at']
         verbose_name = '评论'
         verbose_name_plural = verbose_name

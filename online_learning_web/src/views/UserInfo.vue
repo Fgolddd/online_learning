@@ -12,7 +12,7 @@ const userInfo = store.getters['userInfo/getUserInfo']
     <div class="card">
       <div class="card-image">
         <figure class="image is-1by1">
-          <img class="is-rounded" :src="userInfo.avatar" alt="Placeholder image" />
+          <img class="" :src="userInfo.avatar" alt="Placeholder image" />
         </figure>
       </div>
       <div class="card-content">

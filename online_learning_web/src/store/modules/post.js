@@ -17,6 +17,10 @@ const actions = {
         const response = await axios.get('post/')
         commit('setPosts', response.data);
     },
+    async submitComment({ commit }, form) {
+        const response = await axios.post('comment/', form)
+        commit('setPosts', response.data);
+    },
 };
 
 const mutations = {

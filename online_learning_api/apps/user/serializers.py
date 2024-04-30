@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from .models import User
-from apps.course.serializers import CollectionCourseSerializer
+
+
+
 
 class UserSerializer(serializers.ModelSerializer):
-    collections = CollectionCourseSerializer(many=True, read_only=True)
-
     class Meta:
         model = User
         fields = (
@@ -14,11 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
             'avatar',
             'password',
             'is_staff', 
-            'collections',
         )
         
-
-
     def create(self, validated_data):
         user = super().create(validated_data)
         user.set_password(validated_data['password'])
@@ -30,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(validated_data['password'])
         return super().update(instance, validated_data)
 
-class UserCommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username',)
+class LimitedUserSerializer(UserSerializer):
+    class Meta(UserSerializer.Meta):
+        fields = ('id', 'username', 'avatar')
+

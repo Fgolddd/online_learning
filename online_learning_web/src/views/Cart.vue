@@ -1,38 +1,42 @@
 <script setup>
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 const store = useStore()
-const collections = store.getters['userInfo/getUserInfo'].collections
+const cart = store.getters['cart/getCart']
 const totalPrice = computed(() => {
   let total = 0
-  collections.forEach((item) => {
-    total += Number(item.price)
+  cart.forEach((item) => {
+    total += Number(item.course.price)
   })
   return total.toFixed(2)
+})
+
+onMounted(() => {
+  store.dispatch('cart/fetchCart')
 })
 </script>
 <template>
   <Header></Header>
   <section class="section-spacing">
     <div class="columns is-centered is-multiline">
-      <div class="column is-12" v-for="(item, index) in collections" :key="index">
+      <div class="column is-12" v-for="(item, index) in cart" :key="index">
         <div class="level">
           <div class="level-left">
             <div class="level-item">
               <figure class="image is-48x48">
-                <img :src="item.course_cover" />
+                <img :src="item.course.course_cover" />
               </figure>
             </div>
             <div class="level-item">
               <div class="content">
-                <p class="title is-5">{{ item.name }}</p>
+                <p class="title is-5">{{ item.course.name }}</p>
               </div>
             </div>
             <div class="level-item">
               <div class="content">
-                <p class="title is-5">￥{{ item.price }}</p>
+                <p class="title is-5">￥{{ item.course.price }}</p>
               </div>
             </div>
           </div>

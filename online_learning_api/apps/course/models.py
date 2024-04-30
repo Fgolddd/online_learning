@@ -53,7 +53,6 @@ class Course(BaseModel):
     verbose_name="封面图片", blank=True)
     course_type = models.SmallIntegerField(choices=course_type, default=0, verbose_name="付费类型")
     description = RichTextField(blank=True, null=True, verbose_name="详情介绍")
-    attachment_path = models.CharField(max_length=1000, blank=True, null=True, verbose_name="课件路径")
     attachment_link = models.URLField(max_length=1000, blank=True, null=True, verbose_name="课件链接")
     status = models.SmallIntegerField(choices=status, default=0, verbose_name="课程状态")
     students = models.IntegerField(default=0, verbose_name="学习人数")

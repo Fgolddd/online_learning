@@ -6,7 +6,7 @@ const state = () => ({
     userId: null,
     username: null,
     token: null,
-
+    userAvatar: null,
     isAuthenticated: false,
 });
 
@@ -14,7 +14,7 @@ const getters = {
     getUserId: (state) => state.userId,
     getUserName: (state) => state.username,
     getToken: (state) => state.token,
-
+    getUserAvatar: (state) => state.userAvatar,
     getIsAuthenticated: (state) => state.isAuthenticated,
 };
 
@@ -60,12 +60,12 @@ const mutations = {
         state.userId = authData.id;
         state.username = authData.username;
         state.token = authData.token;
-
+        state.userAvatar = authData.avatar;
         state.isAuthenticated = true;
         localStorage.setItem('token', authData.token);
         localStorage.setItem('userName', authData.username);
         localStorage.setItem('userId', authData.id);
-
+        localStorage.setItem('userAvatar', authData.avatar);
         axios.defaults.headers.common['Authorization'] = `Bearer ${authData.token}`;
     },
     clearAuthData(state) {
@@ -76,7 +76,7 @@ const mutations = {
         localStorage.removeItem('token');
         localStorage.removeItem('userName');
         localStorage.removeItem('userId');
-
+        localStorage.removeItem('userAvatar');
         delete axios.defaults.headers.common['Authorization'];
     },
     async register(state, form) {

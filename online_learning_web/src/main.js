@@ -1,6 +1,6 @@
 import './assets/main.css'
 import '@icon-park/vue-next/styles/index.css'
-
+import '@wangeditor/editor/dist/css/style.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'

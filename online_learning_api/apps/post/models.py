@@ -21,7 +21,7 @@ class Post(models.Model):
         return self.author.username + '的帖子'
 
     class Meta:
-        db_table = 'olearn_post'
+        db_table = 'onlearn_post'
         ordering = ['-created_at']
         verbose_name = '帖子'
         verbose_name_plural = verbose_name

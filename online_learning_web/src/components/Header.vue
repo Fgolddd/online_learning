@@ -1,5 +1,5 @@
 <script setup>
-import { Home, Bookshelf, Search, User, ShoppingCart } from '@icon-park/vue-next'
+import { Home, Bookshelf, Search, User, ShoppingCart, Notes } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 
 import { ref, onMounted } from 'vue'
@@ -12,23 +12,25 @@ const isLogin = ref(false)
 const userName = localStorage.getItem('userName')
 const userId = localStorage.getItem('userId')
 
-const toUserInfo = (userId) => {
+function toUserInfo(userId) {
   router.push(`/user/info/${userId}`)
 }
-
-const toUserCart = (userId) => {
+function toUserCart(userId) {
   router.push(`/cart/${userId}`)
 }
 
 const handleLogout = async () => {
   await store.dispatch('login/logout')
   setTimeout(() => {
-    router.push('/')
+    router.push('/login')
   }, 1000) // 延迟 1 秒后执行路由跳转
 }
 
 const toIndex = () => {
   router.push('/')
+}
+function toPost() {
+  router.push('/post/edit')
 }
 const toCourse = () => {
   router.push('/course')
@@ -87,7 +89,7 @@ onMounted(() => {
 
           <div class="navbar-item">
             <p class="control has-icons-left">
-              <input class="input" type="text" placeholder="Find a course" />
+              <input class="input" type="text" placeholder="搜索课程" />
               <a class="icon is-left">
                 <search
                   theme="multi-color"
@@ -100,12 +102,12 @@ onMounted(() => {
         </div>
 
         <div class="navbar-end">
+          <a class="navbar-item" v-if="isLogin" @click="toPost">
+            <notes theme="two-tone" size="24" :fill="['#333', '#50e3c2']" />
+            <span>发帖</span>
+          </a>
           <a class="navbar-item" v-if="isLogin" @click="toUserCart">
-            <shopping-cart
-              theme="multi-color"
-              size="24"
-              :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
-            />
+            <shopping-cart theme="multi-color" size="24" :fill="['#333', '#50e3c2']" />
 
             <span>购物车</span>
           </a>
@@ -113,11 +115,7 @@ onMounted(() => {
           <a class="navbar-item" v-if="isLogin">
             <div class="dropdown is-hoverable is-right">
               <div class="dropdown-trigger">
-                <user
-                  theme="multi-color"
-                  size="24"
-                  :fill="['#333', '#50e3c2', '#FFF', '#cf139e']"
-                />
+                <user theme="multi-color" size="24" :fill="['#333', '#50e3c2']" />
                 <span>{{ userName }}</span>
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
