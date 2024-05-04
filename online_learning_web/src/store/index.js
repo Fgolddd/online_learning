@@ -4,12 +4,14 @@ import post from './modules/post';
 import course from './modules/course';
 import userInfo from './modules/userInfo';
 import cart from './modules/cart';
+import order from './modules/order'
 export default createStore({
     modules: {
         login,
         post,
         course,
         userInfo,
-        cart
+        cart,
+        order
     },
 });

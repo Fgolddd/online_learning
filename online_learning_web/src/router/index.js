@@ -35,7 +35,7 @@ const router = createRouter({
       component: () => import('../views/VideoRoom.vue')
     },
     {
-      path: '/cart/:userId',
+      path: '/cart',
       name: 'Cart',
       component: () => import('../views/Cart.vue')
     },
@@ -53,6 +53,11 @@ const router = createRouter({
       path: '/post/edit',
       name: 'PostEdit',
       component: () => import('../views/PostEdit.vue')
+    },
+    {
+      path: '/order',
+      name: 'Order',
+      component: () => import('../views/Order.vue')
     }
   ]
 })

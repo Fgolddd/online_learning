@@ -1,20 +1,32 @@
 <script setup>
+import router from '@/router'
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useStore } from 'vuex'
 const store = useStore()
-const cart = store.getters['cart/getCart']
-const totalPrice = computed(() => {
-  let total = 0
-  cart.forEach((item) => {
-    total += Number(item.course.price)
-  })
-  return total.toFixed(2)
-})
+const cart = ref([])
 
-onMounted(() => {
+const totalPrice = ref(0)
+function deleteItem(id) {
+  cart.value.filter((item) => item.id !== id)
+  store.dispatch('cart/deleteItem', id)
+}
+
+function createOrder() {
+  router.push('/order')
+}
+
+onBeforeMount(() => {
   store.dispatch('cart/fetchCart')
+  cart.value = store.getters['cart/getCart']
+  totalPrice.value = computed(() => {
+    let total = 0
+    cart.value.forEach((item) => {
+      total += Number(item.course.price)
+    })
+    return total.toFixed(2)
+  })
 })
 </script>
 <template>
@@ -50,10 +62,10 @@ onMounted(() => {
     <div class="column">
       <div class="level">
         <div class="level-left">
-          <p class="title is-5">总计：￥{{ totalPrice }}</p>
+          <p class="title is-5">总计：￥{{ totalPrice.value }}</p>
         </div>
         <div class="level-right">
-          <button class="button is-primary" @click="pay">去支付</button>
+          <button class="button is-primary" @click="createOrder">支付</button>
         </div>
       </div>
     </div>

@@ -4,15 +4,41 @@ import Header from '../components/Header.vue'
 import { ShoppingCartAdd, Buy } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import axios from 'axios'
 import { toast } from 'bulma-toast'
+import { onBeforeMount, ref } from 'vue'
 
 const store = useStore()
 const router = useRouter()
 const courseId = Number(useRouter().currentRoute.value.params.courseId)
 
-const course = store.getters['course/getCourseById'](courseId)
+const course = ref({})
 
-const chapters = course.chapters
+const chapters = ref([])
+
+async function addCourseToCart() {
+  try {
+    const res = await axios.post(
+      'cart/',
+      { course: courseId },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      },
+    )
+    if (res.status === 201) {
+      toast({
+        message: '添加成功',
+        type: 'is-success',
+        position: 'top-center',
+        duration: 2000,
+      })
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 async function toVideoRoom(section) {
   if (localStorage.getItem('token')) {
@@ -30,6 +56,11 @@ async function toVideoRoom(section) {
     }, 1000)
   }
 }
+
+onBeforeMount(() => {
+  course.value = store.getters['course/getCourseById'](courseId)
+  chapters.value = course.value.chapters
+})
 </script>
 <template>
   <Header></Header>
@@ -57,6 +88,7 @@ async function toVideoRoom(section) {
                   class="button is-primary is-outlined is-rounded"
                   style="margin-right: 1rem"
                   title="添加购物车"
+                  @click="addCourseToCart"
                 >
                   <shopping-cart-add
                     theme="multi-color"

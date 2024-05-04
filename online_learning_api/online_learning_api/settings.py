@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "apps.post",
     "apps.comment",
     "apps.cart",
+    "apps.order"
 ]
 
 MIDDLEWARE = [

@@ -10,13 +10,13 @@ const router = useRouter()
 const isLogin = ref(false)
 
 const userName = localStorage.getItem('userName')
-const userId = localStorage.getItem('userId')
+const userId = Number(localStorage.getItem('userId'))
 
 function toUserInfo(userId) {
   router.push(`/user/info/${userId}`)
 }
-function toUserCart(userId) {
-  router.push(`/cart/${userId}`)
+function toUserCart() {
+  router.push('/cart')
 }
 
 const handleLogout = async () => {

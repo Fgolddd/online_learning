@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "bulma-toast";
 
 const namespaced = true;
 
@@ -23,11 +24,34 @@ const actions = {
         commit('setCart', response.data);
 
     },
+    async deleteItem({ commit }, id) {
+        try {
+            await axios.delete(`cart/${id}/`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            toast({
+                message: '删除成功',
+                type: 'is-danger',
+                position: 'top-center',
+                duration: 3000,
+            });
+            commit('deleteItem', id);
+        } catch (error) {
+            console.error(error);
+        }
+
+
+    }
 };
 
 const mutations = {
     setCart(state, cart) {
         state.cart = cart;
+    },
+    deleteItem(state, id) {
+        state.cart = state.cart.filter((item) => item.id !== id);
     },
 };
 
