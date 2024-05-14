@@ -31,5 +31,8 @@ urlpatterns = [
     path('info/<int:pk>/update-avatar/', UserInfoViewSet.as_view({
         'put': 'update_avatar',
     })),
+    path('mycourse/', UserInfoViewSet.as_view({
+        'get': 'my_course',
+    }))
 
 ]   

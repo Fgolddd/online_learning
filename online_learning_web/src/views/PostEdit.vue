@@ -1,74 +1,40 @@
 <script setup>
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
-import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import api from '@/api'
+import { ref } from 'vue'
 import { toast } from 'bulma-toast'
-import axios from 'axios'
-// 编辑器实例，必须用 shallowRef
-const editorRef = shallowRef()
-const mode = ref('simple')
-// 内容 HTML
-const valueHtml = ref('')
-
-// 模拟 ajax 异步获取内容
-onMounted(() => {
-  setTimeout(() => {
-    valueHtml.value = ''
-  }, 1500)
-})
-
-const toolbarConfig = {}
-const editorConfig = { placeholder: '请输入内容...' }
-
-// 组件销毁时，也及时销毁编辑器
-onBeforeUnmount(() => {
-  const editor = editorRef.value
-  if (editor == null) return
-  editor.destroy()
-})
-
-const handleCreated = (editor) => {
-  editorRef.value = editor // 记录 editor 实例，重要！
-}
-
-async function publishContent() {
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const mdContent = ref('')
+const publishContent = async () => {
   try {
-    // 确保编辑器实例已创建
-    if (!editorRef.value) return
-
-    // 获取编辑器的HTML内容
-    const htmlContent = editorRef.value.getHtml()
-    const tempElement = document.createElement('div')
-    tempElement.innerHTML = htmlContent
-    const content = tempElement.textContent
-
-    // 发送POST请求到后端，这里使用fetch API作为示例
-    const response = await axios.post(
-      'post/',
-      {
-        content: content,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      },
-    )
-    if (response.status === 201) {
+    const res = await api.post.createPost({
+      content: mdContent.value,
+    })
+    if (res.status === 201) {
       toast({
         message: '发布成功',
-        type: 'is-success',
+        type: 'is-primary',
         position: 'top-center',
         duration: 2000,
       })
+      setTimeout(() => {
+        router.push('/')
+      }, 1000)
     } else {
-      console.error('内容发布失败')
-      // 处理错误情况
+      toast({
+        message: '发布失败',
+        type: 'is-danger',
+        position: 'top-center',
+        duration: 2000,
+      })
+      setTimeout(() => {
+        router.push('/')
+      }, 1000)
     }
   } catch (error) {
-    console.error('请求错误:', error)
-    // 错误处理
+    console.error('Error submitting Markdown:', error)
   }
 }
 </script>
@@ -80,21 +46,7 @@ async function publishContent() {
         <p class="card-header-title">发个动态吧！</p>
       </div>
       <div class="card-content">
-        <div style="border: 1px solid #ccc">
-          <Toolbar
-            style="border-bottom: 1px solid #ccc"
-            :editor="editorRef"
-            :defaultConfig="toolbarConfig"
-            :mode="mode"
-          />
-          <Editor
-            style="height: 300px; overflow-y: hidden"
-            v-model="valueHtml"
-            :defaultConfig="editorConfig"
-            :mode="mode"
-            @onCreated="handleCreated"
-          />
-        </div>
+        <v-md-editor v-model="mdContent" height="400px"></v-md-editor>
       </div>
       <div class="card-content">
         <div class="level">

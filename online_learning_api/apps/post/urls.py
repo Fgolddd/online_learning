@@ -12,7 +12,9 @@ urlpatterns = [
     path('<int:pk>/', PostViewSet.as_view({
         'get': 'retrieve',
         'put': 'update',
-        
         'delete': 'destroy'
     })),
+    path('<int:pk>/thumbs_up/', PostViewSet.as_view({
+        'put': 'handle_thumbs_up'
+    }))
 ]

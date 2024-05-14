@@ -1,33 +1,29 @@
 <script setup>
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
-import { ref } from 'vue'
+import { onBeforeMount, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '../api/index'
 import { toast } from 'bulma-toast'
+
 const router = useRouter()
 const store = useStore()
 const postId = Number(router.currentRoute.value.params.postId)
-const post = store.getters['post/getPostById'](postId)
-
-const userInfo = store.getters['userInfo/getUserInfo']
-const comments = post.comments
+// const post = store.getters['post/getPostById'](postId)
+const post = reactive({})
+const userInfo = store.getters['user/getUserInfo']
+const comments = reactive([])
 const commentText = ref('')
-const isAuth = ref(post.author.id === Number(localStorage.getItem('userId')))
 
 async function submitComment() {
   try {
-    const credentials = { post: postId, content: commentText.value }
-    const response = await axios.post('comment/', credentials, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    })
-    const newComment = response.data
+    const form = { post: postId, content: commentText.value }
+    const res = await api.post.addComment(form)
 
-    comments.push(newComment)
-    if (response.status === 201) {
+    const newComment = res.data
+    comments.value.push(newComment)
+    if (res.status === 201) {
       toast({
         message: '评论成功',
         type: 'is-success',
@@ -42,17 +38,15 @@ async function submitComment() {
     console.error(error)
     // 处理登录失败...
   }
-  setTimeout(() => {
-    router.push('/')
-  }, 1000) // 延迟 1 秒后执行路由跳转
 }
 
+function addPrefixToImages(content, mediaUrl) {
+  return content.replace(/!\[\]\((.*)\)/g, '![](' + mediaUrl + '/$1)')
+}
+const baseURL = 'http://127.0.0.1:8000'
+
 async function deletePost() {
-  const res = await axios.delete(`post/${postId}/`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
+  const res = await api.post.deletePost(postId)
   if (res.status === 204) {
     toast({
       message: '删除成功',
@@ -65,6 +59,12 @@ async function deletePost() {
     }, 1000) // 延迟 1 秒后执行路由跳转
   }
 }
+
+onBeforeMount(async () => {
+  const res = await api.post.getPost(postId)
+  post.value = res.data
+  comments.value = res.data.comments
+})
 </script>
 <template>
   <Header></Header>
@@ -75,18 +75,18 @@ async function deletePost() {
           <div class="level-left">
             <div class="level-item">
               <figure class="image is-48x48">
-                <img class="is-rounded" :src="post.author.avatar" alt="Placeholder image" />
+                <img class="is-rounded" :src="post.value?.author.avatar" alt="Placeholder image" />
               </figure>
             </div>
             <div class="level-item">
               <p>
-                <strong>{{ post.author.username }}</strong>
+                <strong>{{ post.value?.author.username }}</strong>
               </p>
             </div>
           </div>
           <div class="level-right">
             <div class="level-item">
-              <time>发布于 {{ post.created_at }}</time>
+              <time>发布于 {{ post.value?.created_at }}</time>
             </div>
           </div>
         </div>
@@ -95,10 +95,10 @@ async function deletePost() {
         <div class="level">
           <div class="level-left">
             <div class="content">
-              {{ post.content }}
+              <v-md-preview :text="addPrefixToImages(post.value?.content, baseURL)"></v-md-preview>
             </div>
           </div>
-          <div v-if="isAuth" class="level-right">
+          <div class="level-right">
             <button class="button is-danger" @click="deletePost">删除</button>
           </div>
         </div>
@@ -141,7 +141,7 @@ async function deletePost() {
       </div>
       <div class="card-content">
         <div class="columns is-multiline">
-          <div class="column is-full" v-for="comment in comments" :key="comment.id">
+          <div class="column is-full" v-for="comment in comments.value" :key="comment.id">
             <div class="media">
               <div class="media-left">
                 <figure class="image is-48x48">
@@ -152,6 +152,7 @@ async function deletePost() {
                 {{ comment.content }}
               </div>
             </div>
+            <hr />
           </div>
         </div>
       </div>

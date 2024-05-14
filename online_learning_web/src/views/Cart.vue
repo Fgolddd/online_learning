@@ -2,24 +2,29 @@
 import router from '@/router'
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
-import { computed, onBeforeMount, ref } from 'vue'
-import { useStore } from 'vuex'
-const store = useStore()
-const cart = ref([])
+import { computed, onBeforeMount, reactive, ref } from 'vue'
+
+import { toast } from 'bulma-toast'
+import api from '@/api'
+
+const cart = reactive([])
 
 const totalPrice = ref(0)
 function deleteItem(id) {
+  api.cart.deleteItem(id)
   cart.value.filter((item) => item.id !== id)
-  store.dispatch('cart/deleteItem', id)
 }
 
-function createOrder() {
+function toOrder() {
   router.push('/order')
 }
 
-onBeforeMount(() => {
-  store.dispatch('cart/fetchCart')
-  cart.value = store.getters['cart/getCart']
+onBeforeMount(async () => {
+  const res = await api.cart.getCartList()
+  if (res.status === 200) {
+    cart.value = res.data
+  }
+
   totalPrice.value = computed(() => {
     let total = 0
     cart.value.forEach((item) => {
@@ -33,7 +38,7 @@ onBeforeMount(() => {
   <Header></Header>
   <section class="section-spacing">
     <div class="columns is-centered is-multiline">
-      <div class="column is-12" v-for="(item, index) in cart" :key="index">
+      <div class="column is-12" v-for="(item, index) in cart.value" :key="index">
         <div class="level">
           <div class="level-left">
             <div class="level-item">
@@ -65,7 +70,7 @@ onBeforeMount(() => {
           <p class="title is-5">总计：￥{{ totalPrice.value }}</p>
         </div>
         <div class="level-right">
-          <button class="button is-primary" @click="createOrder">支付</button>
+          <button class="button is-primary" @click="toOrder">支付</button>
         </div>
       </div>
     </div>

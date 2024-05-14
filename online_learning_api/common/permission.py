@@ -22,15 +22,15 @@ class OrderPermission(permissions.BasePermission):
         # 判断订单所属用户对象和登录的用户是否未同一个用户
         return obj.user == request.user
 
-class PostPermission(permissions.BasePermission):
+# class PostPermission(permissions.BasePermission):
 
-    def has_object_permission(self, request, view, obj):
-        if view.action in ['list']:
-            # 对于PostList视图，无需登录即可访问
-            return True
+#     def has_object_permission(self, request, view, obj):
+#         if view.action in ['list']:
+#             # 对于PostList视图，无需登录即可访问
+#             return True
 
-        # 对于PostCreate与PostDelete视图，需要用户登录
-        return obj.author == request.user or request.user.is_superuser
+#         # 对于PostCreate与PostDelete视图，需要用户登录
+#         return obj.author == request.user or request.user.is_superuser
 
 class CommentPermission(permissions.BasePermission):
 

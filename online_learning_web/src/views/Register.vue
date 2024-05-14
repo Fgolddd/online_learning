@@ -2,18 +2,29 @@
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
 import { ref } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import api from '../api/index'
+import { toast } from 'bulma-toast'
 const router = useRouter()
-const store = useStore()
+
 const username = ref('')
 const phone = ref('')
 const password = ref('')
 
 async function handleSubmit() {
   const form = { username: username.value, phone: phone.value, password: password.value }
-  await store.commit('login/register', form)
-  router.push('/login')
+  const res = await api.user.register(form)
+  if (res.status === 201) {
+    toast({
+      message: '注册成功',
+      type: 'is-primary',
+      position: 'top-center',
+      duration: 2000,
+    })
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000) // 延迟 1 秒后执行路由跳转
+  }
 }
 </script>
 <template>

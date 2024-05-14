@@ -7,7 +7,9 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from common.permission import UserPermission
 from .models import User
+from apps.course.models import SelledCourse
 from .serializers import UserSerializer
+from apps.course.serializers import SelledCourseSerializer
 # Create your views here.
 
 
@@ -16,6 +18,11 @@ class UserInfoViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, UserPermission]
 
+    @action(detail=False, methods=['get'], url_path='mycourse/<int:pk>')
+    def my_course(self, request, *args, **kwargs):
+        queryset = SelledCourse.objects.filter(user=request.user)
+        serializer = SelledCourseSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['put'], url_path='change-password')
     def change_password(self, request):
@@ -92,7 +99,10 @@ class LoginView(TokenObtainPairView):
         result['id'] = serializer.user.id
         result['phone'] = serializer.user.phone
         result['username'] = serializer.user.username
-        result['avatar'] = serializer.user.avatar.url
         result['token'] = result.pop('access')
+        if serializer.user.avatar:
+            result['avatar'] = serializer.user.avatar.url
+        else :
+            result['avatar'] = ''
 
         return Response(result, status=status.HTTP_200_OK)

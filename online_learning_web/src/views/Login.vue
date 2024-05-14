@@ -12,9 +12,8 @@ const store = useStore()
 
 async function handleSubmit() {
   try {
-    const credentials = { username: username.value, password: password.value }
-    await store.dispatch('login/login', credentials)
-
+    const form = { username: username.value, password: password.value }
+    await store.dispatch('user/login', form)
     setTimeout(() => {
       router.push('/')
     }, 1000) // 延迟 1 秒后执行路由跳转

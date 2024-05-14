@@ -18,12 +18,12 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('id', 'order_code', 'amount', 'created_at', 'order_goods_set')
+        fields = ('id', 'order_code', 'amount', 'created_at', 'order_goods_set', 'user')
 
     def get_order_goods_set(self, obj):
         order_goods_set = OrderCourse.objects.filter(order=obj)
         return OrderCourseSerializer(order_goods_set, many=True).data
 
     def get_created_at(self, obj):
-        
-        return obj.created_at.strftime("%m-%d %H:%M")
+
+        return obj.created_at.strftime("%H:%M %m-%d")

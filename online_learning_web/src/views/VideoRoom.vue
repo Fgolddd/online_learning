@@ -2,21 +2,25 @@
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
 import Video from '@/components/Video.vue'
-
-import { useStore } from 'vuex'
-const store = useStore()
-
-const video = store.getters['userInfo/getVideoInfoById']
+import { onBeforeMount, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import api from '@/api/index'
+const videoId = Number(useRouter().currentRoute.value.params.videoId)
+const video = reactive({})
+onBeforeMount(async () => {
+  const res = await api.course.getVedio(videoId)
+  video.value = res.data
+})
 </script>
 <template>
   <Header></Header>
   <section class="section-spacing">
     <div class="card">
       <div class="card-content">
-        <p class="title is-4">{{ video.title }}</p>
+        <p class="title is-4">{{ video.value.title }}</p>
       </div>
       <div class="card-image">
-        <Video :source="video.link"></Video>
+        <Video :source="video.value.link"></Video>
       </div>
     </div>
   </section>

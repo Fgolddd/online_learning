@@ -1,15 +1,18 @@
 <script setup>
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
-import { computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
+import { onBeforeMount, reactive } from 'vue'
+
 import { useRouter } from 'vue-router'
 
-const store = useStore()
+import api from '../api/index'
+
 const router = useRouter()
-const courses = computed(() => store.getters['course/getCourses'])
+const courses = reactive([])
+console.log(courses)
 onBeforeMount(async () => {
-  await store.dispatch('course/fetchCourses')
+  const res = await api.course.getCourseList()
+  courses.value = res.data
 })
 
 function handleCardClick(courseId) {
@@ -23,7 +26,7 @@ function handleCardClick(courseId) {
   </section>
   <section class="section-spacing">
     <div class="columns is-multiline">
-      <div class="column is-one-quarter" v-for="course in courses" :key="course.id">
+      <div class="column is-one-quarter" v-for="course in courses.value" :key="course.id">
         <div class="card" @click="handleCardClick(course.id)">
           <div class="card-image">
             <figure class="image is-4by3">

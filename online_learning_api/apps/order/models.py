@@ -18,7 +18,7 @@ class Order(models.Model):
     status = models.SmallIntegerField(verbose_name='订单状态', default=1, choices=ORDER_STATUS)
     pay_type = models.SmallIntegerField(verbose_name='支付方式', default=1, blank=True, choices=PAY_TYPES)
     created_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
-
+    
     class Meta:
         db_table = 'onlearn_order'
         ordering = ['-created_at',]

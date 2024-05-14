@@ -1,6 +1,6 @@
 from django.db import models
 from common.base_model import BaseModel
-from ckeditor.fields import RichTextField
+from mdeditor.fields import MDTextField
 
 # Create your models here.
 class CourseCategory(BaseModel):
@@ -52,7 +52,7 @@ class Course(BaseModel):
     course_cover = models.ImageField(max_length=255, upload_to="course/cover/", null=True,
     verbose_name="封面图片", blank=True)
     course_type = models.SmallIntegerField(choices=course_type, default=0, verbose_name="付费类型")
-    description = RichTextField(blank=True, null=True, verbose_name="详情介绍")
+    description = MDTextField(blank=True, null=True, verbose_name="详情介绍")
     attachment_link = models.URLField(max_length=1000, blank=True, null=True, verbose_name="课件链接")
     status = models.SmallIntegerField(choices=status, default=0, verbose_name="课程状态")
     students = models.IntegerField(default=0, verbose_name="学习人数")
@@ -68,3 +68,16 @@ class Course(BaseModel):
     def __str__(self):
         return "%s" % self.name
 
+class SelledCourse(models.Model):
+    user = models.ForeignKey("user.User", on_delete=models.DO_NOTHING,
+                             db_constraint=False, null=True, blank=True, verbose_name="用户")
+    course = models.ForeignKey("Course", on_delete=models.DO_NOTHING,
+                               db_constraint=False, null=True, blank=True, verbose_name="课程")
+
+    class Meta:
+        db_table = "onlearn_selled_course"
+        verbose_name = "已购课程"
+        verbose_name_plural = verbose_name
+    
+    def __str__(self):
+        return "%s" % self.user

@@ -13,6 +13,7 @@
   "dependencies": {
     "@editorjs/editorjs": "^2.29.1",
     "@icon-park/vue-next": "^1.4.2",
+    "@kangc/v-md-editor": "^2.3.18",
     "@vueuse/core": "^10.9.0",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",

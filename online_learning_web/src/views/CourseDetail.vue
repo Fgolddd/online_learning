@@ -3,30 +3,21 @@ import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
 import { ShoppingCartAdd, Buy } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
-import axios from 'axios'
-import { toast } from 'bulma-toast'
-import { onBeforeMount, ref } from 'vue'
 
-const store = useStore()
+import { toast } from 'bulma-toast'
+import { onBeforeMount, reactive } from 'vue'
+import api from '../api/index'
+
 const router = useRouter()
 const courseId = Number(useRouter().currentRoute.value.params.courseId)
 
-const course = ref({})
-
-const chapters = ref([])
+const course = reactive({})
+const chapters = reactive([])
 
 async function addCourseToCart() {
   try {
-    const res = await axios.post(
-      'cart/',
-      { course: courseId },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      },
-    )
+    const res = await api.cart.addItem(courseId)
+
     if (res.status === 201) {
       toast({
         message: '添加成功',
@@ -42,7 +33,6 @@ async function addCourseToCart() {
 
 async function toVideoRoom(section) {
   if (localStorage.getItem('token')) {
-    await store.dispatch('userInfo/fetchVideoInfo', section.id)
     router.push(`/video/${section.id}`)
   } else {
     toast({
@@ -57,9 +47,10 @@ async function toVideoRoom(section) {
   }
 }
 
-onBeforeMount(() => {
-  course.value = store.getters['course/getCourseById'](courseId)
-  chapters.value = course.value.chapters
+onBeforeMount(async () => {
+  const res = await api.course.getCourse(courseId)
+  course.value = res.data
+  chapters.value = res.data.chapters
 })
 </script>
 <template>
@@ -70,18 +61,18 @@ onBeforeMount(() => {
         <div class="card card-spacing">
           <div class="card-image">
             <figure class="image is-4by3">
-              <img :src="course.course_cover" alt="Placeholder image" />
+              <img :src="course.value?.course_cover" alt="Placeholder image" />
             </figure>
           </div>
           <div class="card-content">
             <div class="media">
               <div class="media-left">
                 <figure class="image is-48x48">
-                  <img :src="course.course_cover" alt="Placeholder image" />
+                  <img :src="course.value?.course_cover" alt="Placeholder image" />
                 </figure>
               </div>
               <div class="media-content">
-                <p class="title is-4">{{ course.name }}</p>
+                <p class="title is-4">{{ course.value?.name }}</p>
               </div>
               <div class="media-right">
                 <button
@@ -106,7 +97,7 @@ onBeforeMount(() => {
               </div>
             </div>
             <div class="card-footer">
-              <div v-html="course.description"></div>
+              <div v-html="course.value?.description"></div>
               <br />
             </div>
           </div>
@@ -118,7 +109,7 @@ onBeforeMount(() => {
             <div class="columns is-multiline">
               <div
                 class="column is-12"
-                v-for="(chapter, chapterIndex) in chapters"
+                v-for="(chapter, chapterIndex) in chapters.value"
                 :key="chapterIndex"
               >
                 <div class="dropdown db-width">

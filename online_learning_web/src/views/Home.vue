@@ -2,22 +2,26 @@
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
 import { toast } from 'bulma-toast'
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import api from '../api/index'
 
 const isLogin = ref(false)
 const store = useStore()
 const router = useRouter()
-const posts = computed(() =>
-  store.getters['post/getPosts'].map((post) => ({ ...post, isActivate: false })),
-)
-// const userInfo = store.getters['userInfo/getUserInfo']
+const posts = reactive([])
+
 const userAvatar = 'http://127.0.0.1:8000/' + localStorage.getItem('userAvatar')
 
 function inputClick() {
   router.push('/post/edit')
 }
+
+function addPrefixToImages(content, mediaUrl) {
+  return content.replace(/!\[\]\((.*)\)/g, '![](' + mediaUrl + '/$1)')
+}
+const baseURL = 'http://127.0.0.1:8000'
 
 function toPostDetail(postId) {
   if (localStorage.getItem('token')) {
@@ -35,13 +39,11 @@ function toPostDetail(postId) {
   }
 }
 
-onBeforeMount(() => {
-  store.dispatch('userInfo/fetchUserInfo', localStorage.getItem('userId'))
-  store.dispatch('post/fetchPosts')
-  if (localStorage.getItem('token')) {
-    store.dispatch('userInfo/fetchUserInfo', localStorage.getItem('userId'))
-  }
-  if (localStorage.getItem('userName') || store.getters['login/getIsAuthenticated']) {
+onBeforeMount(async () => {
+  const res = await api.post.getPostList()
+  posts.value = res.data
+
+  if (localStorage.getItem('userName') || store.getters['user/getIsAuthenticated']) {
     isLogin.value = true
   } else {
     isLogin.value = false
@@ -72,7 +74,7 @@ onBeforeMount(() => {
     </div>
     <div class="columns is-centered">
       <div class="column">
-        <article v-for="post in posts" :key="post.id" class="column">
+        <article v-for="post in posts.value" :key="post.id" class="column">
           <div class="card" @click="toPostDetail(post.id)">
             <div class="card-content">
               <div class="level">
@@ -99,8 +101,12 @@ onBeforeMount(() => {
 
             <div class="card-content">
               <div class="content">
-                {{ post.content }}
+                <v-md-preview :text="addPrefixToImages(post.content, baseURL)"></v-md-preview>
               </div>
+            </div>
+            <div class="card-footer">
+              <a class="card-footer-item">点赞数</a>
+              <a class="card-footer-item">评论</a>
             </div>
           </div>
         </article>

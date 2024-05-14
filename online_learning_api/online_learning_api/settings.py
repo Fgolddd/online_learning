@@ -52,8 +52,7 @@ INSTALLED_APPS = [
     # 'drf_yasg',
     'django_filters',
     #富文本编辑器
-    'ckeditor',
-    'stdimage',
+    'mdeditor',
     'taggit',
     "apps.user",
     "apps.course",
@@ -62,6 +61,7 @@ INSTALLED_APPS = [
     "apps.cart",
     "apps.order"
 ]
+X_FRAME_OPTIONS = 'SAMEORIGIN'  # django 3.0 + 默认为 deny
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import login from './modules/login';
+import user from './modules/user';
 import post from './modules/post';
 import course from './modules/course';
 import userInfo from './modules/userInfo';
@@ -7,11 +7,11 @@ import cart from './modules/cart';
 import order from './modules/order'
 export default createStore({
     modules: {
-        login,
+        user,
         post,
         course,
         userInfo,
         cart,
-        order
+        order,
     },
 });

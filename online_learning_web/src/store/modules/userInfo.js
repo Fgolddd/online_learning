@@ -5,11 +5,13 @@ const namespaced = true;
 const state = () => ({
     userInfo: {},
     videoInfo: {},
+    myCourse: []
 });
 
 const getters = {
     getUserInfo: (state) => state.userInfo,
     getVideoInfoById: (state) => state.videoInfo,
+    getMyCourse: (state) => state.myCourse,
 };
 
 const actions = {
@@ -20,15 +22,8 @@ const actions = {
         const response = await axios.get(`user/info/${id}`, { headers })
         commit('setUserInfo', response.data);
     },
-    async fetchVideoInfo({ commit }, id) {
-        const headers = {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
 
-        const response = await axios.get(`course/video/${id}`, { headers })
-        commit('setVideoInfo', response.data);
 
-    },
 };
 
 const mutations = {
@@ -37,6 +32,9 @@ const mutations = {
     },
     setVideoInfo(state, videoInfo) {
         state.videoInfo = videoInfo;
+    },
+    setMyCourse(state, myCourse) {
+        state.myCourse = myCourse;
     },
 };
 

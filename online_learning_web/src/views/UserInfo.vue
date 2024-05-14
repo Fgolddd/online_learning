@@ -4,7 +4,7 @@ import Header from '../components/Header.vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
-const userInfo = store.getters['userInfo/getUserInfo']
+const userInfo = store.getters['user/getUserInfo']
 </script>
 <template>
   <Header></Header>

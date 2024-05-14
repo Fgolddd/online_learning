@@ -8,18 +8,22 @@ from rest_framework import viewsets
 from apps.order.models import Order, OrderCourse
 from apps.cart.models import Cart
 from apps.order.serializers import OrderSerializer
-from common.permission import OrderPermission
+# from common.permission import CartPermission
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated, OrderPermission]
+    permission_classes = [IsAuthenticated]
 
-    @transaction.atomic
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset().filter(user=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+        
     def create(self, request, *args, **kwargs):
         order_code = str(int(time.time())) + str(request.user.id)
         cart_course = Cart.objects.filter(user=request.user)
-        print(cart_course)
+       
         # save_id = transaction.savepoint()
         
         if not cart_course.exists():
