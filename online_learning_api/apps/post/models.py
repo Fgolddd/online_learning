@@ -23,7 +23,7 @@ class Post(models.Model):
 
     class Meta:
         db_table = 'onlearn_post'
-        ordering = ['-created_at']
+        ordering = ['-thumbs_up']
         verbose_name = '帖子'
         verbose_name_plural = verbose_name
 

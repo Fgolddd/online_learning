@@ -15,5 +15,8 @@ export default {
     },
     addComment(params) {
         return http.post('comment/', params, true)
+    },
+    thumbsUp(id) {
+        return http.put(`post/${id}/thumbs_up/`, {}, true)
     }
 }

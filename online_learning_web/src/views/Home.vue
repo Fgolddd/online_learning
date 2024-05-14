@@ -18,6 +18,16 @@ function inputClick() {
   router.push('/post/edit')
 }
 
+function thumbsUp(id) {
+  api.post.thumbsUp(id)
+  toast({
+    message: '点赞成功',
+    type: 'is-success',
+    position: 'top-center',
+    duration: 2000,
+  })
+}
+
 function addPrefixToImages(content, mediaUrl) {
   return content.replace(/!\[\]\((.*)\)/g, '![](' + mediaUrl + '/$1)')
 }
@@ -75,8 +85,8 @@ onBeforeMount(async () => {
     <div class="columns is-centered">
       <div class="column">
         <article v-for="post in posts.value" :key="post.id" class="column">
-          <div class="card" @click="toPostDetail(post.id)">
-            <div class="card-content">
+          <div class="card">
+            <div class="card-content" @click="toPostDetail(post.id)">
               <div class="level">
                 <div class="level-left">
                   <div class="level-item">
@@ -105,8 +115,8 @@ onBeforeMount(async () => {
               </div>
             </div>
             <div class="card-footer">
-              <a class="card-footer-item">点赞数</a>
-              <a class="card-footer-item">评论</a>
+              <a class="card-footer-item" @click="thumbsUp(post.id)">点赞 ({{ post.thumbs_up }})</a>
+              <a class="card-footer-item" @click="toPostDetail(post.id)">评论</a>
             </div>
           </div>
         </article>

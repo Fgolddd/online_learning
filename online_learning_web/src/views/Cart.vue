@@ -3,7 +3,6 @@ import router from '@/router'
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
 import { computed, onBeforeMount, reactive, ref } from 'vue'
-
 import { toast } from 'bulma-toast'
 import api from '@/api'
 
@@ -13,9 +12,15 @@ const totalPrice = ref(0)
 function deleteItem(id) {
   api.cart.deleteItem(id)
   cart.value.filter((item) => item.id !== id)
+  toast({
+    message: '移除成功',
+    type: 'is-success',
+    position: 'top-center',
+    duration: 2000,
+  })
 }
 
-function toOrder() {
+const toOrder = () => {
   router.push('/order')
 }
 

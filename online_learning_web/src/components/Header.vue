@@ -1,5 +1,5 @@
 <script setup>
-import { Home, Bookshelf, Search, User, ShoppingCart, Notes } from '@icon-park/vue-next'
+import { Home, Bookshelf, User, ShoppingCart, Notes } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 
 import { ref, onMounted } from 'vue'
@@ -95,7 +95,7 @@ onMounted(() => {
             <span>课程</span>
           </a>
 
-          <div class="navbar-item">
+          <!-- <div class="navbar-item">
             <p class="control has-icons-left">
               <input class="input" type="text" placeholder="搜索课程" />
               <a class="icon is-left">
@@ -106,7 +106,7 @@ onMounted(() => {
                 />
               </a>
             </p>
-          </div>
+          </div> -->
         </div>
 
         <div class="navbar-end">
