@@ -4,10 +4,12 @@ import post from './post'
 import course from './course'
 import order from './order'
 import cart from './cart'
+import coupon from './coupon'
 export default {
     user,
     post,
     course,
     order,
-    cart
+    cart,
+    coupon
 }

@@ -6,7 +6,6 @@ from apps.comment.serializers import CommentReadSerializer
 from apps.user.serializers import UserSerializer, LimitedUserSerializer
 
 
-
 class PostSerializer(serializers.ModelSerializer):
     comments = CommentReadSerializer(many=True, read_only=True)
     created_at = serializers.SerializerMethodField()

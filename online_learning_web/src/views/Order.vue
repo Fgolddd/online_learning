@@ -4,13 +4,32 @@ import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
 import api from '@/api'
 import { computed } from 'vue'
-
+import { toast } from 'bulma-toast'
 const order = reactive({})
 const totalPrice = ref(0)
+const coupon = reactive([])
 
 const baseURL = 'http://127.0.0.1:8000'
+
+function useCoupon(item) {
+  if (totalPrice.value < item.money) {
+    toast({
+      message: item.name,
+      type: 'is-danger',
+      position: 'top-center',
+      duration: 2000,
+    })
+  } else {
+    totalPrice.value = totalPrice.value - item.money
+  }
+}
+
 onBeforeMount(async () => {
+  const couponRes = await api.coupon.getCouponList()
+  coupon.value = couponRes.data
+  console.log(couponRes.data)
   const res = await api.order.createOrder()
+
   if (res.status === 201) {
     order.value = res.data
   }
@@ -56,6 +75,18 @@ onBeforeMount(async () => {
           <div class="level-left">
             <div class="level-item">
               <p class="title">总价：￥ {{ totalPrice.value }}</p>
+            </div>
+            <div class="level-item">
+              <div class="dropdown is-hoverable is-left">
+                <div class="dropdown-trigger">
+                  <p class="tag is-warning is-large">优惠券</p>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                  <div class="dropdown-content" v-for="item in coupon.value" :key="item.id">
+                    <a class="dropdown-item" @click="useCoupon(item)">{{ item.name }}</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="level-left">

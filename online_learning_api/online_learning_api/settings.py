@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     "apps.post",
     "apps.comment",
     "apps.cart",
-    "apps.order"
+    "apps.order",
+    "apps.coupon"
 ]
 X_FRAME_OPTIONS = 'SAMEORIGIN'  # django 3.0 + 默认为 deny
 

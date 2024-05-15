@@ -5,13 +5,13 @@ from .models import Post
 from .serializers import PostSerializer, PostReadSerializer
 from apps.comment.models import Comment
 from apps.comment.serializers import CommentSerializer
-# from common.permission import PostPermission
+from common.permission import PostPermission
 from rest_framework.decorators import action
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, PostPermission]
 
     def get_serializer_class(self):
         if self.action == 'list' or self.action == 'retrieve':
