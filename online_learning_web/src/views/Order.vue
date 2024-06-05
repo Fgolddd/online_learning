@@ -5,14 +5,16 @@ import Header from '../components/Header.vue'
 import api from '@/api'
 import { computed } from 'vue'
 import { toast } from 'bulma-toast'
+import router from '@/router'
+
 const order = reactive({})
 const totalPrice = ref(0)
 const coupon = reactive([])
 
 const baseURL = 'http://127.0.0.1:8000'
 
-function useCoupon(item) {
-  if (totalPrice.value < item.money) {
+const useCoupon = (item) => {
+  if (totalPrice.value < Number(item.money)) {
     toast({
       message: item.name,
       type: 'is-danger',
@@ -20,14 +22,29 @@ function useCoupon(item) {
       duration: 2000,
     })
   } else {
-    totalPrice.value = totalPrice.value - item.money
+    totalPrice.value = totalPrice.value - Number(item.money)
+  }
+}
+
+async function toPay(id, status) {
+  const res = await api.order.orderPay(id, status)
+  if (res.status === 200) {
+    toast({
+      message: '支付成功',
+      type: 'is-success',
+      position: 'top-center',
+      duration: 2000,
+    })
+    setTimeout(() => {
+      router.push('/myorder')
+    }, 1000) // 延迟 1 秒后执行路由跳转
   }
 }
 
 onBeforeMount(async () => {
   const couponRes = await api.coupon.getCouponList()
   coupon.value = couponRes.data
-  console.log(couponRes.data)
+
   const res = await api.order.createOrder()
 
   if (res.status === 201) {
@@ -91,10 +108,10 @@ onBeforeMount(async () => {
           </div>
           <div class="level-left">
             <div class="level-item">
-              <button class="button is-primary">微信支付</button>
+              <button class="button is-primary" @click="toPay(order.value?.id, 2)">微信支付</button>
             </div>
             <div class="level-item">
-              <button class="button is-info">支付宝支付</button>
+              <button class="button is-info" @click="toPay(order.value?.id, 2)">支付宝支付</button>
             </div>
           </div>
         </div>

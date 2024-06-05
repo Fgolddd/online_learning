@@ -15,10 +15,10 @@ class OrderCourseSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
     order_goods_set = serializers.SerializerMethodField()
-
+    status = serializers.CharField(source='get_status_display')
     class Meta:
         model = Order
-        fields = ('id', 'order_code', 'amount', 'created_at', 'order_goods_set', 'user')
+        fields = ('id', 'order_code', 'status','amount', 'created_at', 'order_goods_set', 'user')
 
     def get_order_goods_set(self, obj):
         order_goods_set = OrderCourse.objects.filter(order=obj)

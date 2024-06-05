@@ -11,7 +11,8 @@ const cart = reactive([])
 const totalPrice = ref(0)
 function deleteItem(id) {
   api.cart.deleteItem(id)
-  cart.value.filter((item) => item.id !== id)
+  cart.value = cart.value.filter((item) => item.id !== id)
+
   toast({
     message: '移除成功',
     type: 'is-success',

@@ -129,7 +129,7 @@ onMounted(() => {
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
                   <a class="dropdown-item" @click="toUserInfo(userId)">个人中心</a>
-                  <a class="dropdown-item" @click="toMyCourse()">我的课程</a>
+                  <!-- <a class="dropdown-item" @click="toMyCourse()">我的课程</a> -->
                   <a class="dropdown-item" @click="toMyOrder()">我的订单</a>
                   <hr class="dropdown-divider" />
                   <a class="dropdown-item" @click="handleLogout">退出登录</a>

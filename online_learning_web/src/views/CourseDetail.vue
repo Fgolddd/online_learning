@@ -14,6 +14,12 @@ const courseId = Number(useRouter().currentRoute.value.params.courseId)
 const course = reactive({})
 const chapters = reactive([])
 
+function addPrefixToImages(content, mediaUrl) {
+  return content.replace(/!\[\]\((.*)\)/g, '![](' + mediaUrl + '/$1)')
+}
+
+const baseURL = 'http://127.0.0.1:8000'
+
 async function addCourseToCart() {
   try {
     const res = await api.cart.addItem(courseId)
@@ -97,7 +103,10 @@ onBeforeMount(async () => {
               </div>
             </div>
             <div class="card-footer">
-              <div v-html="course.value?.description"></div>
+              <v-md-preview
+                :text="addPrefixToImages(course.value?.description, baseURL)"
+              ></v-md-preview>
+
               <br />
             </div>
           </div>

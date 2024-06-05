@@ -18,13 +18,14 @@ function inputClick() {
   router.push('/post/edit')
 }
 
-function thumbsUp(id) {
-  api.post.thumbsUp(id)
+function thumbsUp(post) {
+  api.post.thumbsUp(post.id)
+  post.thumbs_up += 1
   toast({
     message: '点赞成功',
     type: 'is-success',
     position: 'top-center',
-    duration: 2000,
+    duration: 1000,
   })
 }
 
@@ -115,8 +116,10 @@ onBeforeMount(async () => {
               </div>
             </div>
             <div class="card-footer">
-              <a class="card-footer-item" @click="thumbsUp(post.id)">点赞 ({{ post.thumbs_up }})</a>
-              <a class="card-footer-item" @click="toPostDetail(post.id)">评论</a>
+              <a class="card-footer-item" @click="thumbsUp(post)">点赞 ({{ post.thumbs_up }})</a>
+              <a class="card-footer-item" @click="toPostDetail(post.id)"
+                >评论({{ post.comments.length }})</a
+              >
             </div>
           </div>
         </article>

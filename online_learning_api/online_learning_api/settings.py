@@ -26,10 +26,7 @@ SECRET_KEY = 'django-insecure-7gdi9of+54=t)6o*z449sv&!6#au_t6z-8=knknuc8z0_8-3lw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+
 
 # Application definition
 
@@ -73,6 +70,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
 ]
 
 ROOT_URLCONF = 'online_learning_api.urls'

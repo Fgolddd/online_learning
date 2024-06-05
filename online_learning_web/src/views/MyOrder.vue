@@ -1,7 +1,7 @@
 <script setup>
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
-
+import { toast } from 'bulma-toast'
 import { onBeforeMount, reactive } from 'vue'
 import api from '@/api'
 
@@ -9,7 +9,18 @@ const baseURL = 'http://127.0.0.1:8000'
 const orderList = reactive([])
 
 async function removeOrder(orderId) {
-  await api.order.removeOrder(orderId)
+  await api.order.removeOrder(orderId).then((res) => {
+    if (res.status === 204) {
+      toast({
+        message: '删除成功',
+        type: 'is-success',
+        position: 'top-center',
+        duration: 1000,
+      })
+    }
+  })
+
+  orderList.value = orderList.value.filter((item) => item.id !== orderId)
 }
 
 onBeforeMount(async () => {
@@ -54,6 +65,12 @@ onBeforeMount(async () => {
               <div class="level-left">
                 <div class="level-item">
                   <strong>订单金额￥{{ order.amount }}</strong>
+                </div>
+                <div class="level-item" v-if="order.status === '待支付'">
+                  <p class="tag is-warning is-medium">{{ order.status }}</p>
+                </div>
+                <div class="level-item" v-if="order.status === '已支付'">
+                  <p class="tag is-info is-medium">{{ order.status }}</p>
                 </div>
               </div>
               <div class="level-left">

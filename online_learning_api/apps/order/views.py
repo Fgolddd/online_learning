@@ -2,18 +2,18 @@ import datetime
 import time
 from django.db import transaction
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import viewsets
 from apps.order.models import Order, OrderCourse
 from apps.cart.models import Cart
 from apps.order.serializers import OrderSerializer
-# from common.permission import CartPermission
+from common.permission import OrderPermission
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, OrderPermission]
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset().filter(user=request.user)
@@ -52,3 +52,26 @@ class OrderViewSet(viewsets.ModelViewSet):
             # transaction.savepoint_rollback(save_id)
             return Response({'error': "服务处理异常，订单创建失败！"}, 
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def partial_update(self, request, *args, **kwargs):
+        """
+        更新订单的支付状态。
+        """
+        ORDER_STATUS = (
+        (1, '待支付'),
+        (2, '已支付'),
+        )
+        instance = self.get_object()  # 获取需要更新的订单实例
+        new_status = request.data.get('status')  # 假设前端发送的是 {'status': 2} 来表示已支付状态
+        
+        # 验证新状态是否有效
+        valid_statuses = {status[0] for status in ORDER_STATUS}
+        if new_status not in valid_statuses:
+            return Response({"error": "无效的订单状态"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # 更新订单状态
+        instance.status = new_status
+        instance.save(update_fields=['status'])  # 只更新指定字段
+
+        serializer = self.get_serializer(instance)  # 序列化更新后的对象
+        return Response(serializer.data)

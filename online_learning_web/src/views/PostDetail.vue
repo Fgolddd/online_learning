@@ -15,6 +15,8 @@ const post = reactive({})
 const userInfo = store.getters['user/getUserInfo']
 const comments = reactive([])
 const commentText = ref('')
+const aId = ref(null)
+const isAuth = ref(false)
 
 async function submitComment() {
   try {
@@ -22,6 +24,8 @@ async function submitComment() {
     const res = await api.post.addComment(form)
 
     const newComment = res.data
+
+    newComment.user.avatar = baseURL + newComment.user.avatar
     comments.value.push(newComment)
     if (res.status === 201) {
       toast({
@@ -43,6 +47,7 @@ async function submitComment() {
 function addPrefixToImages(content, mediaUrl) {
   return content.replace(/!\[\]\((.*)\)/g, '![](' + mediaUrl + '/$1)')
 }
+
 const baseURL = 'http://127.0.0.1:8000'
 
 async function deletePost() {
@@ -64,6 +69,8 @@ onBeforeMount(async () => {
   const res = await api.post.getPost(postId)
   post.value = res.data
   comments.value = res.data.comments
+  aId.value = res.data.author.id
+  isAuth.value = userInfo.id === aId.value
 })
 </script>
 <template>
@@ -92,18 +99,13 @@ onBeforeMount(async () => {
         </div>
       </div>
       <div class="card-content">
-        <div class="level">
-          <div class="level-left">
-            <div class="content">
-              <v-md-preview :text="addPrefixToImages(post.value?.content, baseURL)"></v-md-preview>
-            </div>
-          </div>
-          <div class="level-right">
-            <button class="button is-danger" @click="deletePost">删除</button>
-          </div>
+        <div class="content">
+          <v-md-preview :text="addPrefixToImages(post.value?.content, baseURL)"></v-md-preview>
         </div>
       </div>
-
+      <div class="card-footer">
+        <button v-if="isAuth" class="button is-danger" @click="deletePost">删除</button>
+      </div>
       <hr />
       <div class="card-content">
         <div class="level">

@@ -5,7 +5,6 @@ import { toast } from "bulma-toast";
 
 const router = useRouter();
 
-
 const http = {
     // 请求方法
     request(config) {
@@ -63,8 +62,20 @@ const http = {
                 errorHandle(error);
                 throw error; // 重新抛出错误以便外部处理
             });
+        } else if (config.method == "PATCH") {
+            return axios.patch(config.url, config.data, {
+                headers: config.headers
+            }).then(response => {
+                // 调用响应拦截器
+                const resp = beforeResponse(response);
+                return resp;
+            }).catch(error => {
+                // 调用异常处理的方法
+                errorHandle(error);
+                throw error; // 重新抛出错误以便外部处理
+            });
         } else {
-            return "请求不被允许"
+            console.log("请求方法错误");
         }
 
     },
@@ -116,6 +127,19 @@ const http = {
             data: data,
             auth: auth,
             method: 'PUT'
+        })
+    },
+    patch(url, data, auth) {
+        /*
+        url：接口地址
+        data: 请求体参数
+        auth：请求是否需要携带tokne进行认证(true or false)
+        */
+        return this.request({
+            url: url,
+            data: data,
+            auth: auth,
+            method: 'PATCH'
         })
     }
 }
